@@ -23,11 +23,8 @@ install npm
  sudo apt install npm 
 ``` 
 
-Create a folder for running this application
-
-``` 
- mkdir nodetest && cd nodetest
-``` 
+Move to or create a project folder for running this application.
+The Git clone will create a new folder called **node.it**.
 
 ## Installing app
 
