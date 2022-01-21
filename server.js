@@ -1,10 +1,14 @@
-const express = require('express');
-const app = express();
+const http = require('http');
+const port = 3000;
 
-app.get('/', (req, res) => {
-   res.send('Hello World!');
-});
+http.createServer((request, response) => {
 
-const server = app.listen(3000, () => {
-  console.log(`Express running → PORT ${server.address().port}`);
-});
+  response.writeHead(200, {'Content-Type': 'text/html'});
+  response.write('<h1>Hello, World!</h1>');
+  response.end();
+
+}).listen(port);
+
+console.log(`server simple server on port ${port}`);
+
+// https://zetcode.com/javascript/http/
