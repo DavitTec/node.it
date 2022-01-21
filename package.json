@@ -1,0 +1,20 @@
+{
+  "name": "simple-node.it-website",
+  "version": "0.0.1",
+  "description": "A simple website built with node.js",
+  "main": "server.js",
+  "scripts": {
+    "start": ""
+  },
+  "author": "Davit",
+  "license": "DAVIT",
+  "devDependencies": {
+    "nodemon": "^1.10.0"
+  }
+}
+
+{
+  "scripts": {
+    "start": "npx nodemon server.js"
+  }
+}
