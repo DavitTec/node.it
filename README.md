@@ -7,7 +7,7 @@ playing with node
 
 Running on Linux Mint
 
-Update you repositories
+Update your repositories
 ``` 
 sudo apt-get update
 ``` 
