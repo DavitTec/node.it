@@ -47,7 +47,8 @@ Now run a simple Hello World http server
 node server.js
 
 ``` 
-
+After running the app from your terminal, access your browser and open 
+[http://localhost:3000/](http://localhost:3000/)
 
 
 
