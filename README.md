@@ -7,17 +7,20 @@ playing with node
 
 Running on Linux Mint
 
-
+Update you repositories
 ``` 
 sudo apt-get update
+``` 
+install nodejs
+``` 
 sudo apt install nodejs
 ```
 
 install npm
-  -  optional to include other modules 
+  -  optionally to include other modules if you wish
 
 ``` 
- sudo apt install npm node-oauth-sign node-http-signature
+ sudo apt install npm 
 ``` 
 
 Create a folder for running this application
