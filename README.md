@@ -41,7 +41,9 @@ Testing it!
 
 ``` 
 npm install http
-
+``` 
+Now run a simple Hello World http server
+``` 
 node server.js
 
 ``` 
