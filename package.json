@@ -15,7 +15,7 @@
     "nodejs"
   ],
   "author": "Davit",
-  "license": "SEE LICENSE IN LICENSE.md",
+  "license": "https://github.com/DavitTec/node.it/blob/master/LICENSE",
   "bugs": {
     "url": "https://github.com/DavitTec/node.it/issues"
   },
