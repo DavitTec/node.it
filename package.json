@@ -1,20 +1,23 @@
 {
-  "name": "simple-node.it-website",
+  "name": "node_it",
   "version": "0.0.1",
-  "description": "A simple website built with node.js",
+  "description": "simple node.js web server",
   "main": "server.js",
   "scripts": {
-    "start": ""
+    "test": "node server.js",
+    "start": "node server.js"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/DavitTec/node.it.git"
+  },
+  "keywords": [
+    "nodejs"
+  ],
   "author": "Davit",
-  "license": "DAVIT",
-  "devDependencies": {
-    "nodemon": "^1.10.0"
-  }
-}
-
-{
-  "scripts": {
-    "start": "npx nodemon server.js"
-  }
+  "license": "SEE LICENSE IN LICENSE.md",
+  "bugs": {
+    "url": "https://github.com/DavitTec/node.it/issues"
+  },
+  "homepage": "https://github.com/DavitTec/node.it#readme"
 }
