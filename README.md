@@ -34,8 +34,7 @@ Create a folder for running this application
 Git clone
 
 ``` 
-git clone https://github.com/DavitTec/node.it.git 
-cd node.it
+git clone https://github.com/DavitTec/node.it.git  && cd node.it
 ``` 
 
 Testing it!
