@@ -26,14 +26,22 @@ Create a folder for running this application
  mkdir nodetest && cd nodetest
 ``` 
 
+## Installing app
+
 Git clone
 
 ``` 
 git clone https://github.com/DavitTec/node.it.git 
-cd  cd node.it
+cd node.it
 ``` 
 
-## Installing
+Testing it!
+
+``` 
+node server.js
+
+``` 
+
 
 
 
