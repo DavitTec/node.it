@@ -38,6 +38,8 @@ cd node.it
 Testing it!
 
 ``` 
+npm install http
+
 node server.js
 
 ``` 
