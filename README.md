@@ -1,5 +1,3 @@
-# node.it
-
 # <a href="https://github.com/DavitTec/nodeit"><img border="0" alt="nodeit" src="lib/img/nodeit.png" height="50"></a>
 
 
