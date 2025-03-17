@@ -1,19 +1,16 @@
-const http = require('http');
+const http = require("http");
+const hostname = "localhost";
 const port = 3000;
 
-http.createServer((request, response) => {
+http
+  .createServer((req, res) => {
+    res.writeHead(200, { "Content-Type": "text/html" });
+    res.write("<h1>Hello, World!</h1>");
+    res.write("A simple HTML service");
+    res.end();
+  })
+  .listen(port);
 
-  response.writeHead(200, {'Content-Type': 'text/html'});
-  response.write('<h1>Hello, World!</h1>');
-  response.write('A simple HTML service');
-  response.end();
+console.log(`simple html server on http://${hostname}:${port}/;
 
-}).listen(port);
-
-console.log(`simple html server on <a href="http://localhost:${port}>Node.it</a>
-
-to Close
-  crtl C or close terminal
- `);
-
-// https://zetcode.com/javascript/http/
+to Close crtl C or close terminal`);

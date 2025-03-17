@@ -1,20 +1,22 @@
 {
   "name": "node_it",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "simple node.js web server",
   "main": "server.js",
   "scripts": {
     "test": "node server.js",
-    "start": "node server.js"
+    "start": "node server.js",
+    "hello": "node ./helloworld/hello"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/DavitTec/node.it.git"
   },
   "keywords": [
-    "nodejs"
+    "nodejs",
+    "http"
   ],
-  "author": "Davit",
+  "author": "David Mullins",
   "license": "https://github.com/DavitTec/node.it/blob/master/LICENSE",
   "bugs": {
     "url": "https://github.com/DavitTec/node.it/issues"
