@@ -564,3 +564,351 @@ The script itself is fine and will work in Node.js; the errors were purely linti
 
 ### Example 2
 
+To print the "version" data from your package.json file to the console using Node.js in ESM (ECMAScript Modules) mode, you have a couple of straightforward options. Since ESM doesn’t support require() natively, we’ll use either createRequire (to simulate CommonJS-style loading) or dynamic import() (for native ESM JSON loading). I’ll provide both solutions.
+
+------
+
+Prerequisites
+
+- Ensure you have a package.json file in your project root with a "version" field, e.g.:
+
+  json
+
+  ```json
+  {
+    "name": "my-app",
+    "version": "1.0.0",
+    "type": "module"
+  }
+  ```
+
+- The "type": "module" field tells Node.js to treat .js files as ESM. If omitted, use .mjs file extensions instead.
+
+------
+
+Option 1: Using createRequire
+
+This approach uses Node.js’s createRequire to load package.json as if it were a CommonJS module.
+
+javascript
+
+```javascript
+// index.mjs
+import { createRequire } from 'node:module';
+const require = createRequire(import.meta.url);
+const { version } = require('./package.json');
+
+console.log(`Project version: ${version}`);
+```
+
+How It Works
+
+- import { createRequire } from 'node:module': Imports the createRequire function from Node’s built-in module module.
+- createRequire(import.meta.url): Creates a require function scoped to the current file’s location (import.meta.url provides the file’s URL).
+- require('./package.json'): Loads the package.json file as a JavaScript object.
+- Destructures the version property and logs it.
+
+Run It
+
+bash
+
+```bash
+node index.mjs
+```
+
+**Output**: Project version: 1.0.0 (or whatever your version is).
+
+------
+
+Option 2: Using Dynamic import()
+
+This is a more "pure ESM" approach, using dynamic import() with a JSON assertion. It’s supported in Node.js 17.5.0+ (and all versions since March 2025, per your current date).
+
+javascript
+
+```javascript
+// index.mjs
+const { version } = await import('./package.json', { assert: { type: 'json' } });
+
+console.log(`Project version: ${version}`);
+```
+
+How It Works
+
+- import('./package.json', { assert: { type: 'json' } }): Dynamically imports package.json as a JSON module.
+  - The assert: { type: 'json' } option tells Node.js to parse the file as JSON.
+- await: Since dynamic import() returns a promise, we use await (requires a top-level await-capable environment, Node.js 14.8.0+).
+- Destructures the version property and logs it.
+
+Run It
+
+bash
+
+```bash
+node index.mjs
+```
+
+**Output**: Project version: 1.0.0.
+
+Note
+
+If you’re in a script where top-level await isn’t allowed (e.g., older Node.js or strict contexts), wrap it in an async function:
+
+javascript
+
+```javascript
+// index.mjs
+async function getVersion() {
+  const { version } = await import('./package.json', { assert: { type: 'json' } });
+  console.log(`Project version: ${version}`);
+}
+getVersion();
+```
+
+------
+
+Which to Choose?
+
+- **Option 1 (createRequire)**:
+  - Pros: Works in all Node.js versions supporting ESM (12.17.0+), simpler syntax, no await needed.
+  - Cons: Less "pure" ESM, relies on a CommonJS-like mechanism.
+- **Option 2 (import())**:
+  - Pros: Native ESM, future-proof, aligns with modern JavaScript standards.
+  - Cons: Requires await (async context), slightly more verbose, needs Node.js 17.5.0+ for JSON imports.
+
+For simplicity and broad compatibility, I’d recommend **Option 1** unless you’re committed to avoiding CommonJS-like patterns entirely.
+
+------
+
+Linting Fix (if needed)
+
+If ESLint flags issues (e.g., 'import' is not defined), ensure your .eslintrc.json is set up for ESM and Node.js:
+
+json
+
+```json
+{
+  "env": {
+    "node": true,
+    "es2021": true
+  },
+  "parserOptions": {
+    "sourceType": "module"
+  }
+}
+```
+
+------
+
+Final Setup
+
+1. Save as index.mjs (or index.js with "type": "module" in package.json).
+2. Run with node index.mjs.
+3. Verify your package.json has a "version" field.
+
+Let me know if you hit any snags or want to adapt this further!
+
+
+
+---
+
+### How to convert between CommonJS and ESM
+
+How to run node Package script in ESM mode without file extension when files are missed between .js and .mjs
+
+To run a Node.js package script in ESM (ECMAScript Module) mode without specifying file extensions (e.g., .js or .mjs), and handle cases where files might be a mix of CommonJS (.js) and ESM (.mjs), you need to configure your project properly. Node.js has specific rules for ESM support, and omitting file extensions requires some setup. Here's how you can achieve this:
+
+------
+
+Steps to Run Node.js in ESM Mode Without File Extensions
+
+1. **Set "type": "module" in package.json**
+   To enable ESM mode for your project, add the following to your package.json:
+
+   json
+
+   ```json
+   {
+     "type": "module"
+   }
+   ```
+
+   This tells Node.js to treat all .js files as ESM by default (unless overridden by .cjs for CommonJS). Without this, .js files are treated as CommonJS, and ESM-specific features (like import) won't work.
+
+2. **Use .mjs or .js Consistently**  
+
+   - If you explicitly want ESM, you can use .mjs for ESM files and .js for CommonJS, but since you want to avoid extensions in imports (e.g., import { foo } from './module'), stick to .js with "type": "module".
+   - If some files are still in CommonJS, they need to be renamed to .cjs or converted to ESM, as Node.js won't automatically resolve mixed module types without extensions.
+
+3. **Update Your Import Statements**
+   In ESM mode, imports must either:
+
+   - Include the full file extension (e.g., import { foo } from './module.js'), or
+   - Omit the extension (e.g., import { foo } from './module'), but this requires additional configuration (see Step 4).
+
+   By default, Node.js requires extensions in ESM imports, unlike CommonJS. To omit them, you need to customize the module resolution.
+
+4. **Configure Node.js to Resolve Extensionless Imports**
+   Node.js doesn't natively support extensionless imports in ESM without a custom loader or resolver. However, you can achieve this by:
+
+   Option 1: Use a Custom Resolver with --experimental-specifier-resolution=node
+
+   Run your script with the --experimental-specifier-resolution=node flag, which mimics CommonJS-style resolution (extensionless imports):
+
+   bash
+
+   ```bash
+   node --experimental-specifier-resolution=node index.js
+   ```
+
+   Update your package.json script:
+
+   json
+
+   ```json
+   {
+     "scripts": {
+       "start": "node --experimental-specifier-resolution=node index.js"
+     }
+   }
+   ```
+
+   This assumes your files are .js and treated as ESM due to "type": "module".
+
+   Option 2: Use a Custom Loader (More Advanced)
+
+   Create a custom loader to resolve extensionless imports. For example:
+
+   - Create a file loader.mjs:
+
+     javascript
+
+     ```javascript
+     import { resolve as resolveDefault } from 'node:module';
+     
+     export async function resolve(specifier, context, nextResolve) {
+       if (!specifier.includes('.')) {
+         try {
+           return await nextResolve(`${specifier}.js`);
+         } catch {
+           try {
+             return await nextResolve(`${specifier}.mjs`);
+           } catch {
+             // Fallback to default resolution if both fail
+           }
+         }
+       }
+       return nextResolve(specifier);
+     }
+     ```
+
+   - Run your script with the loader:
+
+     bash
+
+     ```bash
+     node --loader ./loader.mjs index.js
+     ```
+
+   - Add to package.json:
+
+     json
+
+     ```json
+     {
+       "scripts": {
+         "start": "node --loader ./loader.mjs index.js"
+       }
+     }
+     ```
+
+5. **Handle Mixed .js and .mjs Files**
+   If your project has a mix of .js (CommonJS) and .mjs (ESM) files, Node.js won't resolve them seamlessly without extensions unless:
+
+   - You rename CommonJS files to .cjs and ESM files to .js (with "type": "module"), or
+
+   - You convert all files to ESM and use .js consistently. For example:
+
+   - ESM file (module.js):
+
+     javascript
+
+     ```javascript
+     export const foo = 'bar';
+     ```
+
+   - Importing without extension:
+
+     javascript
+
+     ```javascript
+     import { foo } from './module';
+     console.log(foo);
+     ```
+
+6. **Run the Script**
+   With the above setup, you can run your script via:
+
+   - Command line: node --experimental-specifier-resolution=node index.js
+   - Or via package.json: npm start
+
+------
+
+Example Project Structure
+
+```text
+my-project/
+├── package.json
+├── index.js
+└── module.js
+```
+
+- package.json:
+
+  json
+
+  ```json
+  {
+    "type": "module",
+    "scripts": {
+      "start": "node --experimental-specifier-resolution=node index.js"
+    }
+  }
+  ```
+
+- module.js:
+
+  javascript
+
+  ```javascript
+  export const foo = 'Hello from ESM';
+  ```
+
+- index.js:
+
+  javascript
+
+  ```javascript
+  import { foo } from './module';
+  console.log(foo);
+  ```
+
+Run it:
+
+bash
+
+```bash
+npm start
+```
+
+Output: Hello from ESM
+
+------
+
+Key Notes
+
+- **Mixed Modules**: If you have a mix of .js (CommonJS) and .mjs (ESM), extensionless imports won’t work reliably without converting everything to one system (preferably ESM with .js and "type": "module").
+- **Node Version**: Ensure you're using a recent version of Node.js (e.g., 18.x or later) for the best ESM support.
+- **Limitations**: The --experimental-specifier-resolution=node flag is experimental and may change in future Node.js releases. For production, consider using a bundler like Webpack, Rollup, or esbuild, which natively supports extensionless imports.
+
+Let me know if you need further clarification or help converting specific files!
