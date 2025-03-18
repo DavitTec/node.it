@@ -4,7 +4,7 @@
  * Module dependencies.
  */
 
-var app = require("../app");
+var app = require("../app.js");
 var debug = require("debug")("src:server");
 var http = require("http");
 
@@ -17,9 +17,6 @@ app.set("hostname", hostname);
 
 var port = normalizePort(process.env.PORT || "3000");
 app.set("port", port);
-
-// Import components
-//const main = require("./components/main.js");
 
 /**
  * Create HTTP server.

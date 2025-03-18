@@ -9,7 +9,8 @@
     "start": "node server.js",
     "hello": "node ./helloworld/hello",
     "release": "standard-version",
-    "web": "node ./src/bin/www"
+    "web": "node ./src/bin/www",
+    "app": "node ./src/app"
   },
   "repository": {
     "type": "git",
