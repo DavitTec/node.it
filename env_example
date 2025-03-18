@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 # Set Development
 USER_NAME="joe bloggs"
 USER_ID="239482"

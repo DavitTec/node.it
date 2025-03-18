@@ -5,4 +5,4 @@ const car = {
   wheels: 4,
 };
 
-module.exports = car;
+export default car;

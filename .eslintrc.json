@@ -1,0 +1,13 @@
+{
+  "env": {
+    "node": true, // Tells ESLint this is a Node.js environment
+    "es2021": true // Supports modern JavaScript syntax
+  },
+  "parserOptions": {
+    "sourceType": "module" // Indicates ESM usage
+  },
+  "extends": "eslint:recommended", // Optional: basic recommended rules
+  "rules": {
+    "no-undef": "error" // Keeps the undefined variable check active
+  }
+}
