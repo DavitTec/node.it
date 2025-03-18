@@ -17,6 +17,10 @@ app.set("hostname", hostname);
 
 var port = normalizePort(process.env.PORT || "3000");
 app.set("port", port);
+
+// Import components
+//const main = require("./components/main.js");
+
 /**
  * Create HTTP server.
  */

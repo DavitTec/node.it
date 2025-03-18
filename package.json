@@ -2,7 +2,7 @@
   "name": "node_it",
   "version": "0.0.5",
   "description": "simple node.js web server",
-  "main": "server.js",
+  "type": "commonjs",
   "private": true,
   "scripts": {
     "test": "node ./test/index",
