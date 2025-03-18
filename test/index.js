@@ -3,7 +3,7 @@
 // index.mjs
 
 import { config } from "dotenv";
-import car from "./car.mjs";
+import car from "./car.js";
 
 import { createRequire } from "node:module";
 const require = createRequire(import.meta.url);
