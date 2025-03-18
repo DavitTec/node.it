@@ -1,0 +1,7 @@
+# Set Development
+USER_NAME="joe bloggs"
+USER_ID="239482"
+USER_KEY="foobar"
+NODE_ENV="development"
+NODE_HOSTNAME="localhost"
+NODE_PORT="3000"
