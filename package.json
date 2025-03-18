@@ -1,6 +1,6 @@
 {
   "name": "node_it",
-  "version": "0.0.5-alpha",
+  "version": "0.0.5",
   "description": "simple node.js web server",
   "main": "server.js",
   "scripts": {
