@@ -3,11 +3,13 @@
   "version": "0.0.5",
   "description": "simple node.js web server",
   "main": "server.js",
+  "private": true,
   "scripts": {
     "test": "node ./test/index",
     "start": "node server.js",
     "hello": "node ./helloworld/hello",
-    "release": "standard-version"
+    "release": "standard-version",
+    "web": "node ./src/bin/www"
   },
   "repository": {
     "type": "git",
@@ -24,7 +26,13 @@
   },
   "homepage": "https://github.com/DavitTec/node.it#readme",
   "dependencies": {
-    "dotenv": "^16.4.7"
+    "cookie-parser": "^1.4.7",
+    "debug": "^4.4.0",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2",
+    "http-errors": "^2.0.0",
+    "jade": "^1.11.0",
+    "morgan": "^1.10.0"
   },
   "devDependencies": {
     "standard-version": "^9.5.0"
