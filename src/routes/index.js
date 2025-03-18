@@ -19,22 +19,12 @@ router.get("/", function (req, res, next) {
     <link rel="stylesheet" href="/styles/global.css">
     <link rel="stylesheet" href="/styles/style.css">
 </head>
-<body>
-
-<header>my header</header>
-  <nav>
-  My Nav here
-  </nav>
-    <main>
-/*    ${header()}
+ <body>
+   ${header()}
    ${nav()}
    ${main()}
-   ${footer()} */
-    <h1>Main content</h1>
-      <p> New Main content</p>
-    </main>
-    <footer>My footer here</footer>
-</body>
+   ${footer()} 
+ </body>
 </html>
 `;
   res.send(html);
