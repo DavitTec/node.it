@@ -1,6 +1,6 @@
 {
   "name": "node_it",
-  "version": "0.1.6",
+  "version": "0.1.7-0",
   "description": "simple node.js web server",
   "type": "commonjs",
   "private": true,
@@ -9,6 +9,7 @@
     "start": "node server.js",
     "hello": "node ./helloworld/hello",
     "release": "standard-version",
+    "prelease": "standard-version -p ",
     "web": "node ./src/bin/www",
     "app": "node ./src/app"
   },
