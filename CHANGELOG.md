@@ -2,6 +2,18 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.1.7-1](https://github.com/DavitTec/node.it/compare/v0.1.7-0...v0.1.7-1) (2025-03-19)
+
+
+### Features
+
+* ## Issue 007 - FEATURE to add the stack tracing option ([2e1c863](https://github.com/DavitTec/node.it/commit/2e1c8639a986cd7da5306989b219ef8e1a06e4bb))
+
+
+### Bug Fixes
+
+* missing users.js ([e8d87c2](https://github.com/DavitTec/node.it/commit/e8d87c22e5f43faf1502b2ef65e3323db6b3f7f8))
+
 ### [0.1.7-0](https://github.com/DavitTec/node.it/compare/v0.0.5...v0.1.7-0) (2025-03-19)
 
 
