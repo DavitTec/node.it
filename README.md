@@ -15,7 +15,7 @@ playing with node
 
 # Simple Website Tutorial Starter kit
 
-![alt="Homepage" ](./assets/homepage1.png)
+![alt="Homepage" ](./public/images/homepage1.png)
 
 ## Prerequisites
 
@@ -77,4 +77,4 @@ pnpm web
 
 This will run **'node ./src/bin/www'** and the Express server
 
-<img src="./assets/homepage1.png" alt="Homepage" style="zoom:50%;" /><img src="./assets/mobile1.png" alt="Homepage" style="zoom:50%;" />
+<img src="./public/images/homepage1.png" alt="Homepage" style="zoom:40%;" /><img src="./public/images/mobile1.png" alt="Homepage" style="zoom:30%;" />
