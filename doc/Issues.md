@@ -599,3 +599,360 @@ These changes should resolve:
 - Maintain consistency with your partials structure
 
 Try running this now, and the profile page should render correctly with the user data.
+
+---
+
+## Issue 006 - Fix error handler 
+
+The 404 error indicates that Express can't find a route handler for the requested URL or there's an issue with serving static files or rendering views. Looking at the stack trace, the error originates from app.js:33:8, which corresponds to your custom 404 handler being triggered. This means the request isn't being caught by any of your defined routes.
+
+Let's troubleshoot and fix this step-by-step:
+
+Possible Causes
+
+1. **Route Not Matching**: The URL you're trying to access (e.g., /profile, /, etc.) isn't being handled by the routes in index.js.
+2. **View File Missing**: The EJS file being rendered (e.g., profile.ejs, index.ejs) might not exist in the views directory.
+3. **Static File Issue**: If you're getting a 404 for /stylesheets/style.css, the static file middleware might not be serving it correctly.
+4. **Typo or Path Issue**: There could be a mismatch in file names, paths, or directory structure.
+
+Debugging Steps and Fixes
+
+1. Verify Routes in index.js
+
+Your index.js defines routes for /, /about, /contact, and /profile. Ensure you're accessing one of these URLs (e.g., http://localhost:3000/profile). If you're trying a different URL (e.g., /something-else), the 404 is expected because no route matches.
+
+- **Test**: Visit http://localhost:3000/, http://localhost:3000/about, http://localhost:3000/contact, and http://localhost:3000/profile in your browser.
+- **Fix**: If you're trying a different URL, add a corresponding route in index.js.
+- Check View Files
+
+Ensure all required EJS files exist in src/views/:
+
+- index.ejs
+- about.ejs
+- contact.ejs
+- profile.ejs
+- error.ejs
+- partials/header.ejs
+- partials/footer.ejs
+- partials/nav.ejs
+
+From your error, it seems the request reaches the 404 handler, but we should verify the views are present:
+
+- **Test**: Check your src/views/ directory matches this structure.
+- **Fix**: If any file is missing, create it. For example, if profile.ejs is missing, use the version I provided earlier.
+- Fix Static File Serving
+
+The <link rel="stylesheet" href="/stylesheets/style.css"> in your EJS files assumes style.css is in src/public/stylesheets/. The 404 could occur if:
+
+- The file doesn’t exist at that path.
+- The public directory structure is incorrect.
+
+Your app.js has:
+
+javascript
+
+```javascript
+app.use(express.static(path.join(__dirname, 'public')));
+```
+
+This expects src/public/stylesheets/style.css to exist.
+
+- **Test**: Check if src/public/stylesheets/style.css exists.
+
+- **Fix**: If it’s missing, create it or adjust the path:
+
+  bash
+
+  ```bash
+  mkdir -p src/public/stylesheets
+  touch src/public/stylesheets/style.css
+  ```
+
+  Add some basic CSS to test:
+
+  css
+
+  ```css
+  body {
+    font-family: Arial, sans-serif;
+  }
+  ```
+
+- **Alternative Fix**: If your CSS is in src/public/styles/ (from your original structure), update the EJS link to:
+
+  html
+
+  ```html
+  <link rel="stylesheet" href="/styles/style.css">
+  ```
+
+  And ensure app.js serves the correct directory.
+
+- Verify Directory Structure
+
+Your current structure should be:
+
+```text
+src/
+├── app.js
+├── bin/
+│   └── www
+├── public/
+│   └── stylesheets/
+│       └── style.css
+├── routes/
+│   ├── index.js
+│   └── users.js
+└── views/
+    ├── about.ejs
+    ├── contact.ejs
+    ├── error.ejs
+    ├── index.ejs
+    ├── profile.ejs
+    └── partials/
+        ├── footer.ejs
+        ├── header.ejs
+        └── nav.ejs
+```
+
+- **Test**: Run ls -R src/ (or dir src\ on Windows) to confirm.
+- **Fix**: If any files are in the wrong location (e.g., profile.ejs in src/pages/), move them to src/views/.
+- Check app.js Configuration
+
+Your app.js looks mostly correct, but let’s ensure the view engine is working:
+
+- The line app.set('views', path.join(__dirname, 'views')); assumes views is directly under src/.
+
+- **Test**: Add a console.log to verify the path:
+
+  javascript
+
+  ```javascript
+  console.log('Views directory:', path.join(__dirname, 'views'));
+  app.set('views', path.join(__dirname, 'views'));
+  ```
+
+  Restart the server and check the output (should be something like /home/github.com/DavitTec/node.it/src/views).
+
+- **Fix**: If the path is incorrect, adjust it to the absolute path of your views folder.
+
+- Test the Server Startup
+
+Since app.js exports the app and bin/www starts the server, ensure bin/www is correct:
+
+javascript
+
+```javascript
+#!/usr/bin/env node
+const app = require('../app');
+const http = require('http');
+
+const port = process.env.PORT || '3000';
+app.set('port', port);
+
+const server = http.createServer(app);
+
+server.listen(port, () => {
+  console.log(`Server running at http://localhost:${port}`);
+});
+```
+
+- **Test**: Run node src/bin/www and visit http://localhost:3000/profile.
+- **Fix**: If it doesn’t start, check for syntax errors or missing dependencies (npm install).
+- Add Debug Logging
+
+To pinpoint where the 404 occurs, add logging to index.js:
+
+javascript
+
+```javascript
+router.get("/profile", (req, res) => {
+  console.log('Profile route hit');
+  const user = {
+    name: process.env.USER_NAME || "Joe Bloggs",
+    id: process.env.USER_ID || "239482",
+    key: process.env.USER_KEY
+      ? process.env.USER_KEY.split(",")
+      : ["reading", "gaming", "hiking"]
+  };
+  console.log('Rendering profile with user:', user);
+  res.render("profile", { user: user });
+});
+```
+
+- **Test**: Restart the server, visit /profile, and check the console. If you don’t see these logs, the route isn’t being reached.
+
+Likely Fix
+
+Based on the error, the most likely issue is:
+
+- **Missing View File**: Ensure profile.ejs exists in src/views/ with the content I provided.
+- **Static File 404**: The browser might be requesting /stylesheets/style.css, but it’s not found. Create the file or fix the path.
+
+Final Steps
+
+1. Ensure all files are in place as per the structure above.
+2. Run npm install to ensure all dependencies (express, http-errors, dotenv) are installed.
+3. Start the server: node src/bin/www.
+4. Test all routes: /, /about, /contact, /profile.
+
+If you still get a 404, please tell me:
+
+- The exact URL you’re visiting (e.g., http://localhost:3000/profile).
+- The console output after adding the debug logs.
+- The contents of src/views/ and src/public/.
+
+This should resolve the 404 error!
+
+---
+
+## Issue 006 - Fix the stack tracing messages on Errors
+
+To customize the 404 error response so that it only shows "Error 404 Not Found" without the stack trace or additional error details, we need to modify the error handler in src/app.js. Currently, it’s rendering the error.ejs template with the full error message and stack trace (in development mode). We can simplify this by either:
+
+1. Updating the error handler to render a minimal message directly.
+2. Modifying error.ejs to show only what you want.
+
+Since you’re not seeing the full error.ejs template rendered (just the raw error text), it seems the issue might be that error.ejs isn’t rendering properly, or the response is being sent incorrectly. Let’s fix this by ensuring a clean, minimal 404 response.
+
+Solution
+
+Option 1: Modify app.js Error Handler
+
+Update src/app.js to send a plain text response for 404 errors instead of rendering a template with extra details:
+
+javascript
+
+```javascript
+const createError = require("http-errors");
+const express = require("express");
+const path = require("path");
+const dotenv = require("dotenv");
+const indexRouter = require("./routes/index");
+const usersRouter = require("./routes/users");
+
+dotenv.config();
+
+const app = express();
+
+// View engine setup
+app.set("views", path.join(__dirname, "views"));
+app.set("view engine", "ejs");
+
+// Middleware
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(express.static(path.join(__dirname, "public")));
+
+// Routes
+app.use("/", indexRouter);
+app.use("/users", usersRouter);
+
+// Custom 404 handler
+app.use((req, res, next) => {
+  res.status(404).send("Error 404 Not Found");
+});
+
+// Error handler (for non-404 errors)
+app.use((err, req, res, next) => {
+  res.locals.message = err.message;
+  res.locals.error = req.app.get('env') === 'development' ? err : {};
+
+  res.status(err.status || 500);
+  res.render("error", {
+    title: "Error",
+    status: err.status || 500,
+    message: err.message
+  });
+});
+
+module.exports = app;
+```
+
+**Changes:**
+
+- Replaced next(createError(404)) with res.status(404).send("Error 404 Not Found").
+- This sends a plain text response directly for 404 errors, bypassing the error.ejs template for 404s.
+- Kept the general error handler for non-404 errors (e.g., 500 errors).
+
+Option 2: Update error.ejs for Minimal Output
+
+If you prefer to keep using the template, update src/views/error.ejs to only show the minimal message:
+
+html
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Error <%= status %></title>
+  <link rel="stylesheet" href="/stylesheets/style.css">
+</head>
+<body>
+  <h1>Error <%= status %> Not Found</h1>
+</body>
+</html>
+```
+
+Then keep app.js as it was (using next(createError(404))):
+
+javascript
+
+```javascript
+// Custom 404 handler
+app.use((req, res, next) => {
+  next(createError(404));
+});
+
+// Error handler
+app.use((err, req, res, next) => {
+  res.status(err.status || 500);
+  res.render("error", {
+    title: "Error",
+    status: err.status || 500,
+    message: err.message
+  });
+});
+```
+
+**Changes:**
+
+- Simplified error.ejs to only show "Error 404 Not Found" (or the appropriate status code).
+- Removed stack trace and extra details.
+
+Why You’re Seeing Raw Text
+
+The current behavior (showing NotFoundError: Not Found with a stack trace) suggests:
+
+- error.ejs might be missing or malformed, causing Express to fall back to sending the raw error object.
+- Or, the response is being intercepted before the template renders.
+
+Option 1 (plain text response) is simpler and guarantees you’ll only see "Error 404 Not Found". Option 2 gives you more control over the HTML structure if you want to style it later.
+
+Steps to Apply
+
+1. **Choose Option 1 or 2**:
+   - For Option 1: Replace app.js with the first version above.
+   - For Option 2: Update error.ejs and keep the original app.js error handling.
+2. **Restart the Server**: Run node src/bin/www.
+3. **Test**: Visit http://localhost:3000/missing in your browser.
+
+Expected Result
+
+For either option, when you visit http://localhost:3000/missing, you should see only:
+
+```text
+Error 404 Not Found
+```
+
+With no stack trace or additional text.
+
+Verification
+
+If you still see the stack trace:
+
+- Check if src/views/error.ejs exists and is valid (for Option 2).
+- Confirm no other middleware is interfering with the response.
+- Add a console.log('404 handler triggered') in the 404 handler to ensure it’s being hit.
+
+Let me know if this works or if you need further adjustments!
