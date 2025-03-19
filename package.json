@@ -1,6 +1,6 @@
 {
   "name": "node_it",
-  "version": "0.0.5",
+  "version": "0.1.6",
   "description": "simple node.js web server",
   "type": "commonjs",
   "private": true,
