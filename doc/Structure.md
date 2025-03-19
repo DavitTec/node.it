@@ -2,17 +2,19 @@
 
 ### Directory structure 
 
-```bash
+```shell
+.
 ├── CHANGELOG.md
 ├── doc
 │   ├── About_Changelog.md
 │   ├── Adding_Components.md
 │   ├── Correcting Objects.md
 │   ├── EJS Templating Code.md
-│   ├── error_handling.md
+│   ├── Error_handling.md
 │   ├── index.html
-│   ├── issues.md
-│   └── learn-javascript.md
+│   ├── Issues.md
+│   ├── Learn-javascript.md
+│   └── Structure.md
 ├── env_example
 ├── helloworld
 │   └── hello.js
@@ -35,37 +37,33 @@
 ├── server.js
 ├── src
 │   ├── app.js
-│   ├── app.old.js
 │   ├── bin
 │   │   └── www
 │   ├── components
-│   │   ├── footer.mjs
-│   │   ├── header.mjs
-│   │   ├── main.mjs
-│   │   └── nav.mjs
-│   ├── package.json
 │   ├── pages
-│   │   ├── about.js
-│   │   ├── contact.js
-│   │   └── home.js
 │   ├── public
 │   │   ├── images
 │   │   ├── javascripts
-│   │   ├── styles
-│   │   │   ├── global.css
-│   │   │   └── style.css
-│   │   └── stylesheets
+│   │   └── styles
 │   │       └── style.css
 │   ├── routes
 │   │   ├── index.js
 │   │   └── users.js
 │   └── views
-│       ├── error.jade
-│       ├── index.jade
-│       ├── layout.jade
+│       ├── about.ejs
+│       ├── contact.ejs
+│       ├── error.ejs
+│       ├── index.ejs
+│       ├── partials
+│       │   ├── footer.ejs
+│       │   ├── head.ejs
+│       │   ├── header.ejs
+│       │   └── nav.ejs
 │       └── profile.ejs
 └── test
     ├── car.js
     └── index.js
+
+25 directories, 34 files
 ```
 
