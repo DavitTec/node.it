@@ -12,6 +12,14 @@ dotenv.config();
 
 const app = express();
 
+// Serve static files from root public/
+app.use(express.static(path.join(__dirname, "..", "public")));
+
+// Fallback for SPA-like behavior (optional)
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "..", "dist", "index.html"));
+});
+
 // View engine setup
 // Set up EJS as the view engine
 console.log("Views directory:", path.join(__dirname, "views"));

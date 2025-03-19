@@ -2,5 +2,12 @@
   "editor.fontSize": 12,
   "files.autoSave": "onFocusChange",
   "editor.tabSize": 2,
-  "editor.wordWrap": "on"
+  "editor.wordWrap": "on",
+  "liveServer.settings.CustomBrowser": "chrome",
+  "liveServer.settings.host": "localhost",
+  "livePreview.hostIP": "localhost",
+  "livePreview.httpHeaders": {
+    "Accept-Ranges": "bytes"
+  },
+  "liveServer.settings.root": "/dist"
 }
