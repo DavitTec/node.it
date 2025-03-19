@@ -44,8 +44,8 @@ async function generateStaticFiles() {
     console.log(`Generated ${page.folder || "root"}/index.html`);
   }
 
-  // Copy static assets (public folder)
-  const publicDir = path.join(__dirname, "..", "src", "public");
+  // Copy root public/ to dist/public/
+  const publicDir = path.join(__dirname, "..", "public");
   await copyDir(publicDir, path.join(outputDir, "public"));
 }
 

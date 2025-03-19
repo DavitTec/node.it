@@ -3,12 +3,12 @@ const fs = require("fs").promises;
 const path = require("path");
 
 async function generateStaticFiles() {
-  const outputDir = path.join(__dirname, "..", "dist"); // Base output directory
+  const outputDir = path.join(__dirname, "..", "dist");
   await fs.mkdir(outputDir, { recursive: true });
 
-  // Define pages with folder names and data
+  // Define pages
   const pages = [
-    { folder: "", file: "index.ejs", data: { title: "Home" } }, // Root index
+    { folder: "", file: "index.ejs", data: { title: "Home" } },
     { folder: "about", file: "about.ejs", data: { title: "About" } },
     { folder: "contact", file: "contact.ejs", data: { title: "Contact" } },
     {
@@ -29,14 +29,10 @@ async function generateStaticFiles() {
   for (const page of pages) {
     const templatePath = path.join(__dirname, "..", "src", "views", page.file);
     const templateStr = await fs.readFile(templatePath, "utf8");
-
-    // Render EJS with data
     const html = ejs.render(templateStr, {
       ...page.data,
-      filename: templatePath, // For partials
+      filename: templatePath,
     });
-
-    // Create folder and write index.html
     const pageDir = path.join(outputDir, page.folder);
     await fs.mkdir(pageDir, { recursive: true });
     const outputPath = path.join(pageDir, "index.html");
@@ -44,8 +40,8 @@ async function generateStaticFiles() {
     console.log(`Generated ${page.folder || "root"}/index.html`);
   }
 
-  // Copy static assets (public folder)
-  const publicDir = path.join(__dirname, "..", "src", "public");
+  // Copy root public/ to dist/public/
+  const publicDir = path.join(__dirname, "..", "public");
   await copyDir(publicDir, path.join(outputDir, "public"));
 }
 
