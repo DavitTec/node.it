@@ -1396,3 +1396,361 @@ Your updated structure will now be:
 ```
 
 This approach centralizes your <head> management and keeps your views cleaner! Let me know if you need help with additional customizations.
+
+---
+
+## Issue 009 -  Add capitalise function
+
+```bash
+console.log(`Node.js version: ${process.version}`);
+console.log(`Project version: ${version}\n`);
+
+
+function capitalize(s) {
+  return s.toLowerCase().replace(/\b./g, (a) => a.toUpperCase());
+}
+
+let myName = args[0];
+
+if (!myName) {
+  myName = process.env.USER_NAME.split(" ")[0];
+}
+
+console.log(`Hello ${capitalize(myName)}, \n`);
+```
+
+---
+
+## Issue 010 -Fix and amend capitalise
+
+> summary: fix and amend capitalise function and feature for profile.ejs
+
+There are a few syntax and logical errors in your code related to capitalizing firstName and user.name. Here's how we can fix it:
+
+1. **Syntax Error**: The line const firstName = capitalize(process.env.USER_NAME)} has an extra closing brace and is outside the route handler, which doesn’t make sense in this context.
+2. **Undefined args**: The code references args[0], but args isn’t defined anywhere (possibly a leftover from a script context).
+3. **Capitalization**: You want to capitalize user.name and potentially a firstName, but the current implementation is incomplete.
+
+Let’s clean this up and ensure user.name (and optionally a separate firstName) is capitalized correctly.
+
+Fixed Code: src/routes/index.js
+
+javascript
+
+```javascript
+const express = require("express");
+const router = express.Router();
+const dotenv = require("dotenv");
+dotenv.config();
+
+// Capitalize function
+function capitalize(str) {
+  if (!str) return ""; // Handle null/undefined case
+  return str
+    .toLowerCase()
+    .split(" ")
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+}
+
+router.get("/", (req, res) => {
+  res.render("index", { title: "Home" });
+});
+
+router.get("/about", (req, res) => {
+  res.render("about", { title: "About" });
+});
+
+router.get("/contact", (req, res) => {
+  res.render("contact", { title: "Contact" });
+});
+
+router.get("/profile", (req, res) => {
+  // Get and capitalize the full name
+  const rawName = process.env.USER_NAME || "Joe Bloggs";
+  const capitalizedName = capitalize(rawName);
+
+  // Optionally extract and capitalize just the first name
+  const firstName = capitalize(rawName.split(" ")[0]);
+
+  const user = {
+    name: capitalizedName, // Capitalized full name
+    id: process.env.USER_ID || "239482",
+    key: process.env.USER_KEY
+      ? process.env.USER_KEY.split(",")
+      : ["reading", "gaming", "hiking"]
+  };
+
+  res.render("profile", {
+    user: user,
+    title: `${user.name}'s Profile` // Uses capitalized name
+  });
+});
+
+module.exports = router;
+```
+
+Changes Made
+
+1. **Fixed capitalize Function**:
+   - Improved it to handle full names (e.g., "joe bloggs" → "Joe Bloggs") by splitting on spaces and capitalizing each word.
+   - Added a check for null/empty strings to avoid errors.
+   - Replaced the regex approach with a simpler, more readable method using split, map, and join.
+2. **Moved firstName Logic**:
+   - Removed the standalone const firstName = capitalize(process.env.USER_NAME) line, as it was misplaced.
+   - Added firstName inside the /profile route handler if you need it separately (e.g., to display just "Joe" from "Joe Bloggs").
+   - If you don’t need firstName separately, you can remove that line.
+3. **Applied Capitalization**:
+   - user.name is now set to the capitalized version of process.env.USER_NAME.
+   - The title uses user.name directly, so it’s automatically capitalized (e.g., "Joe Bloggs's Profile").
+4. **Removed Unused Code**:
+   - Deleted let myName = args[0] and the related if block, as args isn’t defined (likely a copy-paste error from a different context).
+
+Verification
+
+- If .env has USER_NAME="joe bloggs":
+  - user.name becomes "Joe Bloggs".
+  - title becomes "Joe Bloggs's Profile".
+  - firstName (if used) becomes "Joe".
+- If USER_NAME is unset:
+  - Falls back to "Joe Bloggs" (capitalized from "joe bloggs").
+
+Updated profile.ejs (If Needed)
+
+Your profile.ejs already uses <%= user.name %>, so it will automatically reflect the capitalized name:
+
+html
+
+```html
+<!-- views/profile.ejs -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <%- include('partials/head') %>
+
+  <body>
+    <%- include('partials/header') %>
+    <%- include('partials/nav') %>
+
+    <main>
+      <h1><%= user.name %>'s Profile</h1> <!-- Will show "Joe Bloggs" -->
+      <p>ID: <%= user.id %></p>
+      <h2>Hobbies</h2>
+      <ul>
+        <% user.key.forEach(function(item) { %>
+          <li><%= item %></li>
+        <% }); %>
+      </ul>
+    </main>
+
+    <%- include('partials/footer') %>
+  </body>
+</html>
+```
+
+Optional: Using firstName
+
+If you want to display just the first name somewhere in profile.ejs, pass it separately and use it:
+
+Updated Route
+
+javascript
+
+```javascript
+router.get("/profile", (req, res) => {
+  const rawName = process.env.USER_NAME || "Joe Bloggs";
+  const capitalizedName = capitalize(rawName);
+  const firstName = capitalize(rawName.split(" ")[0]);
+
+  const user = {
+    name: capitalizedName,
+    id: process.env.USER_ID || "239482",
+    key: process.env.USER_KEY
+      ? process.env.USER_KEY.split(",")
+      : ["reading", "gaming", "hiking"]
+  };
+
+  res.render("profile", {
+    user: user,
+    firstName: firstName, // Pass firstName separately
+    title: `${user.name}'s Profile`
+  });
+});
+```
+
+Updated profile.ejs
+
+html
+
+```html
+<main>
+  <h1><%= firstName %>'s Profile</h1> <!-- Shows "Joe" -->
+  <p>Full Name: <%= user.name %></p> <!-- Shows "Joe Bloggs" -->
+  <p>ID: <%= user.id %></p>
+  <h2>Hobbies</h2>
+  <ul>
+    <% user.key.forEach(function(item) { %>
+      <li><%= item %></li>
+    <% }); %>
+  </ul>
+</main>
+```
+
+Testing
+
+1. Update your .env:
+
+   ```text
+   USER_NAME="john doe"
+   ```
+
+2. Restart the server: node src/bin/www.
+
+3. Visit http://localhost:3000/profile.
+
+4. Expected output:
+
+   - Title: "John Doe's Profile"
+   - Heading: "John Doe's Profile" (or "John's Profile" if using firstName).
+
+This should resolve the capitalization issue and clean up the code. Let me know if you need further adjustments!
+
+---
+
+## Issue 011 -Adding "firstname"
+
+To add user.firstname to the user object in your route handler, you can simply include it alongside name, id, and key. Since you’re already extracting and capitalizing the first name with const firstName = capitalize(rawName.split(" ")[0]), you can assign it directly to user.firstname. This way, it becomes part of the user object and can be accessed in your profile.ejs template as <%= user.firstname %>.
+
+Here’s how to modify your code:
+
+Updated src/routes/index.js
+
+javascript
+
+```javascript
+const express = require("express");
+const router = express.Router();
+const dotenv = require("dotenv");
+dotenv.config();
+
+// Capitalize function
+function capitalize(str) {
+  if (!str) return ""; // Handle null/undefined case
+  return str
+    .toLowerCase()
+    .split(" ")
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+    .join(" ");
+}
+
+router.get("/", (req, res) => {
+  res.render("index", { title: "Home" });
+});
+
+router.get("/about", (req, res) => {
+  res.render("about", { title: "About" });
+});
+
+router.get("/contact", (req, res) => {
+  res.render("contact", { title: "Contact" });
+});
+
+router.get("/profile", (req, res) => {
+  // Get and capitalize the full name
+  const rawName = process.env.USER_NAME || "Joe Bloggs";
+  const capitalizedName = capitalize(rawName);
+
+  // Extract and capitalize just the first name
+  const firstName = capitalize(rawName.split(" ")[0]);
+
+  const user = {
+    name: capitalizedName,      // Full name: "Joe Bloggs"
+    firstname: firstName,       // First name: "Joe"
+    id: process.env.USER_ID || "239482",
+    key: process.env.USER_KEY
+      ? process.env.USER_KEY.split(",")
+      : ["reading", "gaming", "hiking"]
+  };
+
+  res.render("profile", {
+    user: user,
+    title: `${user.name}'s Profile`
+  });
+});
+
+module.exports = router;
+```
+
+Changes Made
+
+- Added firstname: firstName to the user object.
+- Kept firstName as a separate variable to compute it, then assigned it to user.firstname.
+- The user object now has four properties: name, firstname, id, and key.
+
+Update views/profile.ejs
+
+You can now use <%= user.firstname %> in your template alongside user.name, user.id, and user.key:
+
+html
+
+```html
+<!-- views/profile.ejs -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <%- include('partials/head') %>
+
+  <body>
+    <%- include('partials/header') %>
+    <%- include('partials/nav') %>
+
+    <main>
+      <h1><%= user.firstname %>'s Profile</h1> <!-- Displays "Joe" -->
+      <p>Full Name: <%= user.name %></p>      <!-- Displays "Joe Bloggs" -->
+      <p>ID: <%= user.id %></p>               <!-- Displays "239482" -->
+      <h2>Hobbies</h2>
+      <ul>
+        <% user.key.forEach(function(item) { %>
+          <li><%= item %></li>                <!-- Displays "reading", "gaming", "hiking" -->
+        <% }); %>
+      </ul>
+    </main>
+
+    <%- include('partials/footer') %>
+  </body>
+</html>
+```
+
+Testing
+
+1. Ensure your .env file has:
+
+   ```text
+   USER_NAME="joe bloggs"
+   USER_ID=239482
+   USER_KEY=reading,gaming,hiking
+   ```
+
+2. Restart the server: node src/bin/www.
+
+3. Visit http://localhost:3000/profile.
+
+4. Expected output:
+
+   ```text
+   Joe's Profile
+   Full Name: Joe Bloggs
+   ID: 239482
+   Hobbies
+   - reading
+   - gaming
+   - hiking
+   ```
+
+Additional Notes
+
+- **Consistency**: I used firstname (lowercase) to match the style of user.name, user.id, and user.key. If you prefer firstName (camelCase), just change it to user.firstName: firstName in the user object and <%= user.firstName %> in the template.
+- **Fallback**: If USER_NAME is unset, it falls back to "Joe Bloggs", so user.firstname will be "Joe" and user.name will be "Joe Bloggs".
+- **Edge Cases**: The capitalize function handles multi-word names correctly. For example, "mary jane doe" becomes:
+  - user.name: "Mary Jane Doe"
+  - user.firstname: "Mary"
+
+This should give you exactly what you need: a user.firstname property in the user object, derived from USER_NAME. Let me know if you want to tweak it further!

@@ -3,7 +3,7 @@ const express = require("express");
 const path = require("path");
 const dotenv = require("dotenv");
 const indexRouter = require("./routes/index");
-const usersRouter = require("./routes/users");
+const usersRouter = require("./routes/users"); // test but not active
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 
@@ -27,7 +27,7 @@ app.use(logger("dev"));
 
 // Routes
 app.use("/", indexRouter);
-app.use("/users", usersRouter);
+app.use("/users", usersRouter); // test but not active
 
 // Custom 404 handler
 app.use((req, res, next) => {
