@@ -15,25 +15,25 @@ playing with node
 
 # Simple Website Tutorial Starter kit
 
-## Prerequisites
+![alt="Homepage" ](./assets/homepage1.png)
 
-Running on Linux Mint
+## Prerequisites
 
 Update your repositories
 ``` 
 sudo apt-get update
-``` 
+```
 install nodejs
 ``` 
 sudo apt install nodejs
 ```
 
-install npm
+install pnpm
   -  optionally to include other modules if you wish
 
 ``` 
- sudo apt install npm 
-``` 
+ sudo apt install pnpm 
+```
 
 Move to or create a project folder for running this application.
 The Git clone will create a new folder called **node.it**.
@@ -44,21 +44,37 @@ Git clone
 
 ``` 
 git clone https://github.com/DavitTec/node.it.git  && cd node.it
-``` 
+```
 
 Testing it!
 
 ``` 
-npm install http
-``` 
+npm install  
+```
 Now run a simple Hello World http server
 ``` 
-node server.js
+pnpm hello
 
-``` 
+```
 After running the app from your terminal, access your browser and open 
 [http://localhost:3000/](http://localhost:3000/)
 
+## Test
 
+First do a test
 
+```bash
+pnpm test
+```
 
+This will present information to Console only
+
+## Run Web
+
+```bash
+pnpm web
+```
+
+This will run **'node ./src/bin/www'** and the Express server
+
+<img src="./assets/homepage1.png" alt="Homepage" style="zoom:50%;" /><img src="./assets/mobile1.png" alt="Homepage" style="zoom:50%;" />

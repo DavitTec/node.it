@@ -1,13 +1,18 @@
 {
   "name": "node_it",
-  "version": "0.0.5",
+  "version": "0.1.7-1",
   "description": "simple node.js web server",
-  "main": "server.js",
+  "type": "commonjs",
+  "private": true,
   "scripts": {
     "test": "node ./test/index",
     "start": "node server.js",
     "hello": "node ./helloworld/hello",
-    "release": "standard-version"
+    "release": "standard-version",
+    "prelease": "standard-version -p ",
+    "web": "node ./src/bin/www",
+    "app": "node ./src/app",
+    "makeicons": "node ./scripts/generate-favicons.js"
   },
   "repository": {
     "type": "git",
@@ -24,9 +29,22 @@
   },
   "homepage": "https://github.com/DavitTec/node.it#readme",
   "dependencies": {
-    "dotenv": "^16.4.7"
+    "cookie-parser": "^1.4.7",
+    "debug": "^4.4.0",
+    "dotenv": "^16.4.7",
+    "ejs": "^3.1.10",
+    "express": "^4.21.2",
+    "http-errors": "^2.0.0",
+    "morgan": "^1.10.0"
   },
   "devDependencies": {
+    "ico-endec": "^0.1.6",
+    "sharp": "^0.33.5",
     "standard-version": "^9.5.0"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "sharp"
+    ]
   }
 }

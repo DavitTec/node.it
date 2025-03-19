@@ -1,7 +1,10 @@
-# Set Development
+# .env_
+# Development settings
+# Set to "true" to show stack trace, "false" or anything else to hide it
 USER_NAME="joe bloggs"
 USER_ID="239482"
-USER_KEY="foobar"
+USER_KEY="reading,gaming,hiking"
 NODE_ENV="development"
-NODE_HOSTNAME="localhost"
-NODE_PORT="3000"
+HOSTNAME="localhost"
+PORT="3000"
+DEBUG=false
