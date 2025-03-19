@@ -11,13 +11,13 @@
   <h1>
     <%= user.name %>'s Profile
   </h1>
-  <p>Age: <%= user.age %>
+  <p>ID: <%= user.id %>
   </p>
   <h2>Hobbies</h2>
   <ul>
-    <% user.hobbies.forEach(hobby=> { %>
+    <% user.key.forEach(item=> { %>
       <li>
-        <%= hobby %>
+        <%= item %>
       </li>
       <% }); %>
   </ul>
