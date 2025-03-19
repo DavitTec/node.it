@@ -1754,3 +1754,204 @@ Additional Notes
   - user.firstname: "Mary"
 
 This should give you exactly what you need: a user.firstname property in the user object, derived from USER_NAME. Let me know if you want to tweak it further!
+
+---
+
+## Issue 012 -Fixing stylesheets
+
+Let’s clean up and modernize your CSS, remove unnecessary whitespace and padding, and add responsive design for two screen settings:
+
+1. **Mobile** (up to 767px)
+2. **Desktop** (up to 1120px max-width for full screen)
+
+I’ll also implement a **sticky footer** and **sticky nav** while keeping the styles concise and efficient. Here’s the updated structure combining globals.css and styles.css into a single, optimized file (you can split them if preferred).
+
+**Updated src/public/stylesheets/style.cs**
+
+```css
+/* Reset and Base Styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header */
+header {
+  background: #333;
+  color: #fff;
+  text-align: center;
+  padding: 1rem;
+}
+
+/* Navigation */
+nav {
+  background: #f4f4f4;
+  padding: 1rem;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+nav ul {
+  list-style: none;
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+nav a {
+  color: #333;
+  text-decoration: none;
+}
+
+nav a:hover {
+  color: #00b7ff;
+}
+
+/* Main Content */
+main {
+  flex: 1;
+  padding: 1rem;
+}
+
+/* Footer */
+footer {
+  background: #333;
+  color: #fff;
+  text-align: center;
+  padding: 1rem;
+  position: sticky;
+  bottom: 0;
+  width: 100%;
+}
+
+/* Links */
+a {
+  color: #00b7ff;
+  text-decoration: none;
+}
+
+/* Mobile (up to 767px) */
+@media (max-width: 767px) {
+  nav ul {
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  header, nav, main, footer {
+    padding: 0.5rem;
+  }
+
+  main {
+    min-height: 50vh;
+  }
+}
+
+/* Desktop (768px to 1120px) */
+@media (min-width: 768px) {
+  body {
+    max-width: 1120px;
+    margin: 0 auto;
+  }
+
+  nav ul {
+    gap: 2rem;
+  }
+
+  main {
+    padding: 2rem;
+  }
+}
+```
+
+Changes and Improvements
+
+1. Cleaned Up Formatting
+
+- **Removed Whitespace**: Condensed rules by removing unnecessary line breaks and spacing.
+- **Simplified Selectors**: Combined overlapping styles (e.g., removed duplicate body rules from styles.css).
+- **Consistent Units**: Used rem consistently for padding and spacing (1rem ≈ 16px by default).
+- Sticky Footer and Nav
+
+- **Sticky Footer**:
+  - Set body to display: flex; flex-direction: column; min-height: 100vh.
+  - Set main to flex: 1 to push the footer to the bottom.
+  - Used position: sticky; bottom: 0 on footer for it to stick to the bottom when content is short.
+- **Sticky Nav**:
+  - Added position: sticky; top: 0; z-index: 1000 to nav so it stays at the top when scrolling.
+- Responsive Design
+
+- **Mobile (max-width: 767px)**:
+  - Collapses nav ul into a vertical list for better mobile usability.
+  - Reduces padding to 0.5rem across all sections to save space.
+  - Adjusts main’s min-height to 50vh for shorter screens.
+- **Desktop (min-width: 768px)**:
+  - Caps the body width at 1120px and centers it with margin: 0 auto.
+  - Increases nav ul gap to 2rem for better spacing.
+  - Restores main padding to 2rem for a more spacious layout.
+- Removed Unnecessary Styles
+
+- Dropped "Lucida Grande", Helvetica from the font stack since Arial, sans-serif is sufficient and widely supported.
+- Removed redundant min-height: 70vh from main (handled by flex: 1).
+- Simplified nav a by moving the color to the base a rule and adding a hover effect.
+- File Consolidation
+
+- Combined globals.css and styles.css into one file (style.css) since they’re small and overlapping. If you prefer separate files:
+  - Keep reset/base styles (*, body) in globals.css.
+  - Move component styles (header, nav, etc.) to styles.css.
+
+Updated File Structure
+
+```text
+src/
+├── public/
+│   └── stylesheets/
+│       └── style.css  <!-- Updated file -->
+└── views/
+    └── partials/
+        └── head.ejs  <!-- Update CSS path if needed -->
+```
+
+Update head.ejs
+
+Ensure the CSS path matches your structure:
+
+html
+
+```html
+<!-- views/partials/head.ejs -->
+<head>
+  <title><%= title %></title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="/stylesheets/style.css" />
+</head>
+```
+
+Testing
+
+1. Replace your old globals.css and styles.css with this new style.css in src/public/stylesheets/.
+2. Restart the server: node src/bin/www.
+3. Test on:
+   - **Mobile**: Resize browser to < 767px or use a mobile device/emulator.
+   - **Desktop**: View at 768px–1120px to see the max-width effect.
+4. Scroll on pages (e.g., /profile) to confirm the nav sticks to the top and the footer sticks to the bottom.
+
+Expected Results
+
+- **Mobile**: Compact layout, vertical nav, minimal padding.
+- **Desktop**: Centered layout up to 1120px wide, horizontal nav, more padding in main.
+- **Sticky Elements**: Nav stays at the top, footer at the bottom (or below content if it’s longer than the viewport).
+
+Let me know if you need further refinements, like additional breakpoints or specific styling tweaks!
