@@ -6,14 +6,14 @@ async function generateStaticFiles() {
   const outputDir = path.join(__dirname, "..", "dist"); // Output directory for static files
   await fs.mkdir(outputDir, { recursive: true });
 
-  // Data for rendering (mimic your routes)
+  // Define pages with folder names and data
   const pages = [
-    { file: "index.ejs", output: "index.html", data: { title: "Home" } },
-    { file: "about.ejs", output: "about/index.html", data: { title: "About" } },
-    { file: "contact.ejs", output: "contact.html", data: { title: "Contact" } },
+    { folder: "", file: "index.ejs", data: { title: "Home" } }, // Root index
+    { folder: "about", file: "about.ejs", data: { title: "About" } },
+    { folder: "contact", file: "contact.ejs", data: { title: "Contact" } },
     {
+      folder: "profile",
       file: "profile.ejs",
-      output: "profile.html",
       data: {
         title: "Joe Bloggs's Profile",
         user: {
@@ -29,13 +29,19 @@ async function generateStaticFiles() {
   for (const page of pages) {
     const templatePath = path.join(__dirname, "..", "src", "views", page.file);
     const templateStr = await fs.readFile(templatePath, "utf8");
+
+    // Render EJS with data
     const html = ejs.render(templateStr, {
       ...page.data,
       filename: templatePath, // For partials to work
     });
-    const outputPath = path.join(outputDir, page.output);
+
+    // Create folder and write index.html
+    const pageDir = path.join(outputDir, page.folder);
+    await fs.mkdir(pageDir, { recursive: true });
+    const outputPath = path.join(pageDir, "index.html");
     await fs.writeFile(outputPath, html);
-    console.log(`Generated ${page.output}`);
+    console.log(`Generated ${page.folder || "root"}/index.html`);
   }
 
   // Copy static assets (public folder)
