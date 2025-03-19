@@ -2,49 +2,46 @@ var createError = require("http-errors");
 const express = require("express");
 const path = require("path");
 const dotenv = require("dotenv");
+const indexRouter = require("./routes/index");
+const usersRouter = require("./routes/users");
 
 // setting congiurations
 dotenv.config();
 
 const app = express();
 
-// Serve static files
-app.use(express.static(path.join(__dirname, "..")));
-
+// View engine setup
 // Set up EJS as the view engine
 app.set("views", path.join(__dirname, "views"));
 app.set("view engine", "ejs");
 
-// Import and use routes
-const routes = require("./routes/index");
-app.use("/", routes);
+// Middleware
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(express.static(path.join(__dirname, "public")));
 
-// Add Profile View
-app.get("/profile", (req, res) => {
-  const user = {
-    name: process.env.USER_NAME || "Joe Bloggs", // Fallback if env var is missing
-    id: process.env.USER_ID || "239482", // Keep as string or parseInt if needed
-    key: process.env.USER_KEY
-      ? process.env.USER_KEY.split(",")
-      : ["reading", "gaming", "hiking"], // Safe split with fallback
-  };
+// Routes
+app.use("/", indexRouter);
+app.use("/users", usersRouter);
 
-  // Render the profile template with the user object
-  res.render("profile", { user });
+// Custom 404 handler
+app.use((req, res, next) => {
+  next(createError(404));
 });
 
-// catch 404 and forward to error handler
-// error handler
-// set locals, only providing error in development
-// render the error page
+// Error handler
+app.use((err, req, res, next) => {
+  // Set locals, only providing error in development
+  res.locals.message = err.message;
+  res.locals.error = req.app.get("env") === "development" ? err : {};
 
-// Start the server
-/**
- * Get port from environment and store in Express.
- */
-const PORT = process.env.PORT || 3000;
-const HOST = process.env.HOSTNAME || "localhost";
-
-app.listen(PORT, () => {
-  console.log(`Server running at http://${HOST}:${PORT}`);
+  // Render the error page
+  res.status(err.status || 500);
+  res.render("error", {
+    title: "Error",
+    status: err.status || 500,
+    message: err.message,
+  });
 });
+
+module.exports = app;

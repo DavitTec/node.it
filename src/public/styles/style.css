@@ -6,6 +6,15 @@ header {
   text-align: center;
 }
 
+body {
+  padding: 50px;
+  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+}
+
+a {
+  color: #00B7FF;
+}
+
 nav {
   background-color: #f4f4f4;
   padding: 1rem;

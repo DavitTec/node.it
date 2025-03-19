@@ -205,7 +205,7 @@ Let me know if you need more tweaks or have additional requirements!
 
 ---
 
-### Issue 004 - Fix Structure
+## Issue 004 - Fix Structure
 
 Let's reorganize your project to use EJS for all views, consolidate pages/views into one folder, and set up custom error handling. Here's how we can restructure it:
 
@@ -418,5 +418,184 @@ This setup:
 
 You can create similar EJS files for about.ejs, contact.ejs, and profile.ejs following the same pattern as index.ejs, adjusting the content as needed. The error handling will catch 404s and other errors, rendering them through your custom error.ejs template.
 
+## Issue 005 - Fix profile.ejs
 
+There is an issue with profile.ejs and index.js and app.js Current profile.ejs 
 
+I can see a few issues in the code. Let's fix profile.ejs, index.js, and app.js:
+
+1. **profile.ejs**: There's a syntax error in the forEach loop
+2. **index.js**: The title object is incorrectly structured in the profile route
+3. **app.js**: Has some commented-out code we can clean up
+
+Here are the corrected versions:
+
+1. **src/views/profile.ejs**:
+
+html
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= user.name %>'s Profile</title>
+    <link rel="stylesheet" href="/stylesheets/style.css">
+  </head>
+  <body>
+    <%- include('partials/header') %>
+    <%- include('partials/nav') %>
+    
+    <main>
+      <h1><%= user.name %>'s Profile</h1>
+      <p>ID: <%= user.id %></p>
+      <h2>Hobbies</h2>
+      <ul>
+        <% user.key.forEach(function(item) { %>
+          <li><%= item %></li>
+        <% }); %>
+      </ul>
+    </main>
+    
+    <%- include('partials/footer') %>
+  </body>
+</html>
+```
+
+Fix: Changed the arrow function syntax to a traditional function since EJS doesn't support arrow functions in this context. Also added partials for consistency with your other views.
+
+1. **src/routes/index.js**:
+
+javascript
+
+```javascript
+const express = require("express");
+const router = express.Router();
+const dotenv = require("dotenv");
+dotenv.config();
+
+router.get("/", (req, res) => {
+  res.render("index", { title: "Home" });
+});
+
+router.get("/about", (req, res) => {
+  res.render("about", { title: "About" });
+});
+
+router.get("/contact", (req, res) => {
+  res.render("contact", { title: "Contact" });
+});
+
+router.get("/profile", (req, res) => {
+  const user = {
+    name: process.env.USER_NAME || "Joe Bloggs",
+    id: process.env.USER_ID || "239482",
+    key: process.env.USER_KEY
+      ? process.env.USER_KEY.split(",")
+      : ["reading", "gaming", "hiking"]
+  };
+
+  res.render("profile", { user: user }); // Fixed the object structure
+});
+
+module.exports = router;
+```
+
+Fixes:
+
+- Removed duplicate express import
+- Fixed the render object structure (was { title: { user } }, now { user: user })
+- Kept the title separate from user object for consistency
+
+1. **src/app.js**:
+
+javascript
+
+```javascript
+const createError = require("http-errors");
+const express = require("express");
+const path = require("path");
+const dotenv = require("dotenv");
+const indexRouter = require("./routes/index");
+const usersRouter = require("./routes/users");
+
+dotenv.config();
+
+const app = express();
+
+// View engine setup
+app.set("views", path.join(__dirname, "views"));
+app.set("view engine", "ejs");
+
+// Middleware
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(express.static(path.join(__dirname, "public")));
+
+// Routes
+app.use("/", indexRouter);
+app.use("/users", usersRouter);
+
+// Custom 404 handler
+app.use((req, res, next) => {
+  next(createError(404));
+});
+
+// Error handler
+app.use((err, req, res, next) => {
+  res.locals.message = err.message;
+  res.locals.error = req.app.get("env") === "development" ? err : {};
+
+  res.status(err.status || 500);
+  res.render("error", {
+    title: "Error",
+    status: err.status || 500,
+    message: err.message
+  });
+});
+
+module.exports = app;
+```
+
+Fixes:
+
+- Removed commented-out code
+- Kept the structure clean and consistent
+- Note: The server startup code is typically in bin/www, which is why it's not here
+
+Additional notes:
+
+1. Make sure you have a .env file in your project root with:
+
+```text
+USER_NAME=YourName
+USER_ID=12345
+USER_KEY=reading,gaming,hiking
+```
+
+1. The bin/www file should handle the server startup:
+
+javascript
+
+```javascript
+#!/usr/bin/env node
+const app = require('../app');
+const http = require('http');
+
+const port = process.env.PORT || '3000';
+app.set('port', port);
+
+const server = http.createServer(app);
+
+server.listen(port, () => {
+  console.log(`Server running at http://localhost:${port}`);
+});
+```
+
+These changes should resolve:
+
+- The syntax error in profile.ejs's forEach loop
+- The incorrect data structure being passed to the profile view
+- Clean up unnecessary code in app.js
+- Maintain consistency with your partials structure
+
+Try running this now, and the profile page should render correctly with the user data.

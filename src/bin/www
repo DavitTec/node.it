@@ -4,25 +4,25 @@
  * Module dependencies.
  */
 
-var app = require("../app.js");
-var debug = require("debug")("src:server");
-var http = require("http");
+const app = require("../app.js");
+const debug = require("debug")("src:server");
+const http = require("http");
 
 /**
  * Get port from environment and store in Express.
  */
 
-var hostname = process.env.NODE_HOSTNAME || "localhost";
+const hostname = process.env.NODE_HOSTNAME || "localhost";
 app.set("hostname", hostname);
 
-var port = normalizePort(process.env.PORT || "3000");
+const port = normalizePort(process.env.PORT || "3000");
 app.set("port", port);
 
 /**
  * Create HTTP server.
  */
 
-var server = http.createServer(app);
+const server = http.createServer(app);
 
 /**
  * Listen on provided port, on all network interfaces.

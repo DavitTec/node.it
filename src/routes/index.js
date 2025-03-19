@@ -1,84 +1,32 @@
-var express = require("express");
-var router = express.Router();
+const express = require("express");
+const router = express.Router();
+// setting congiurations
+const dotenv = require("dotenv");
+dotenv.config();
 
-const header = require("../components/header.mjs").default;
-const nav = require("../components/nav.mjs").default;
-const main = require("../components/main.mjs").default;
-const footer = require("../components/footer.mjs").default;
-
-// Import pages
-const about = require("../pages/about.js");
-const contact = require("../pages/contact.js");
-
-/* GET home page. */
-// Home page route
-router.get("/", function (req, res, next) {
-  //  res.render('index', { title: 'Express' });
-  const html = `
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>My Website</title>
-    <link rel="stylesheet" href="/styles/global.css">
-    <link rel="stylesheet" href="/styles/style.css">
-</head>
- <body>
-   ${header()}
-   ${nav()}
-   ${main()}
-   ${footer()} 
- </body>
-</html>
-`;
-  res.send(html);
+router.get("/", (req, res) => {
+  res.render("index", { title: "Home" });
 });
 
-// About page route
 router.get("/about", (req, res) => {
-  const html = `
-      <!DOCTYPE html>
-      <html lang="en">
-      <head>
-          <meta charset="UTF-8">
-          <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <title>About - My Website</title>
-          <link rel="stylesheet" href="/styles/global.css">
-          <link rel="stylesheet" href="/styles/style.css">
-      </head>
-      <body>
-          ${header()}
-          ${nav()}
-          ${about()}
-          ${footer()}
-      </body>
-      </html>
-  `;
-  res.send(html);
+  res.render("about", { title: "About" });
 });
 
-// Contact page route
 router.get("/contact", (req, res) => {
-  const html = `
-      <!DOCTYPE html>
-      <html lang="en">
-      <head>
-          <meta charset="UTF-8">
-          <meta name="viewport" content="width=device-width, initial-scale=1.0">
-          <title>Contact - My Website</title>
-          <link rel="stylesheet" href="/styles/global.css">
-          <link rel="stylesheet" href="/styles/style.css">
-      </head>
-      <body>
-          ${header()}
-          ${nav()}
-          ${contact()}
-          ${footer()}
-      </body>
-      </html>
-  `;
-  res.send(html);
+  res.render("contact", { title: "Contact" });
+});
+// Add Profile View
+router.get("/profile", (req, res) => {
+  const user = {
+    name: process.env.USER_NAME || "Joe Bloggs", // Fallback if env var is missing
+    id: process.env.USER_ID || "239482", // Keep as string or parseInt if needed
+    key: process.env.USER_KEY
+      ? process.env.USER_KEY.split(",")
+      : ["reading", "gaming", "hiking"], // Safe split with fallback
+  };
+
+  // Render the profile template with the user object
+  res.render("profile", { user: user }); // Fixed the object structure
 });
 
 module.exports = router;

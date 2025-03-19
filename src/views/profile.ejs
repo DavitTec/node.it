@@ -1,26 +1,23 @@
 <!DOCTYPE html>
 <html>
+  <head>
+    <title><%= user.name %>'s Profile</title>
+    <link rel="stylesheet" href="/styles/style.css" />
+  </head>
+  <body>
+    <%- include('partials/header') %> <%- include('partials/nav') %>
 
-<head>
-  <title>
-    <%= user.name %>'s Profile
-  </title>
-</head>
+    <main>
+      <h1><%= user.name %>'s Profile</h1>
+      <p>ID: <%= user.id %></p>
+      <h2>Hobbies</h2>
+      <ul>
+        <% user.key.forEach(function(item) { %>
+        <li><%= item %></li>
+        <% }); %>
+      </ul>
+    </main>
 
-<body>
-  <h1>
-    <%= user.name %>'s Profile
-  </h1>
-  <p>ID: <%= user.id %>
-  </p>
-  <h2>Hobbies</h2>
-  <ul>
-    <% user.key.forEach(item=> { %>
-      <li>
-        <%= item %>
-      </li>
-      <% }); %>
-  </ul>
-</body>
-
+    <%- include('partials/footer') %>
+  </body>
 </html>

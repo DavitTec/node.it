@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %> - <%= status %></title>
+    <link rel="stylesheet" href="/styles/style.css" />
+  </head>
+
+  <body>
+    <%- include('partials/header') %> <%- include('partials/nav') %>
+
+    <main>
+      <h1>Error <%= status %></h1>
+      <p><%= message %></p>
+      <% if (error.stack) { %>
+      <pre><%= error.stack %></pre>
+      <% } %>
+    </main>
+
+    <%- include('partials/footer') %>
+  </body>
+</html>
