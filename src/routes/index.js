@@ -26,7 +26,7 @@ router.get("/profile", (req, res) => {
   };
 
   // Render the profile template with the user object
-  res.render("profile", { user: user }); // Fixed the object structure
+  res.render("profile", { user: user, title: `${user.name}'s Profile` }); // Fixed the object structure
 });
 
 module.exports = router;

@@ -1130,3 +1130,269 @@ Notes
 - **Security**: Hiding the stack trace in production is a good practice to avoid exposing internal details. You could also tie this to NODE_ENV (e.g., only show stack in development), but DEBUG gives you more explicit control.
 
 Let me know if you need further tweaks!
+
+---
+
+## Issue 008 -  Add head.ejs and avoid repeated code 
+
+To manage the <head> section in a separate head.ejs partial file and avoid repeating it across your views (like index.ejs, about.ejs, contact.ejs, error.ejs, and profile.ejs), you can create views/partials/head.ejs and include it in each page. This approach keeps your code DRY (Don't Repeat Yourself) and makes it easier to update the <head> section globally.
+
+Here’s how to do it:
+
+Step 1: Create views/partials/head.ejs
+
+Move the <head> content from index.ejs into a new file, views/partials/head.ejs:
+
+html
+
+```html
+<!-- views/partials/head.ejs -->
+<head>
+  <title><%= title %></title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="/styles/global.css" />
+  <link rel="stylesheet" href="/styles/style.css" />
+</head>
+```
+
+**Notes:**
+
+- The <%= title %> variable is preserved so each page can set its own title dynamically.
+- Adjust the stylesheet paths (/styles/global.css and /styles/style.css) if your public directory structure differs (e.g., /stylesheets/style.css).
+
+Step 2: Update index.ejs
+
+Modify index.ejs to include the head.ejs partial:
+
+html
+
+```html
+<!-- views/index.ejs -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <%- include('partials/head') %>
+
+  <body>
+    <%- include('partials/header') %>
+    <%- include('partials/nav') %>
+
+    <main>
+      <h1>Welcome</h1>
+      <p>This is the home page</p>
+      <section>
+        <h2>Main Content</h2>
+        <p>This is the main content of the page.</p>
+      </section>
+    </main>
+
+    <%- include('partials/footer') %>
+  </body>
+</html>
+```
+
+**Changes:**
+
+- Replaced the entire <head> section with <%- include('partials/head') %>.
+- The title variable will still work because it’s passed from the route handler (e.g., res.render("index", { title: "Home" })).
+
+Step 3: Update Other Views
+
+Apply the same change to all other view files (about.ejs, contact.ejs, error.ejs, profile.ejs). Here’s an example for each:
+
+views/about.ejs
+
+html
+
+```html
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <%- include('partials/head') %>
+
+  <body>
+    <%- include('partials/header') %>
+    <%- include('partials/nav') %>
+
+    <main>
+      <h1>About Us</h1>
+      <p>This is the about page</p>
+    </main>
+
+    <%- include('partials/footer') %>
+  </body>
+</html>
+```
+
+views/contact.ejs
+
+html
+
+```html
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <%- include('partials/head') %>
+
+  <body>
+    <%- include('partials/header') %>
+    <%- include('partials/nav') %>
+
+    <main>
+      <h1>Contact Us</h1>
+      <p>This is the contact page</p>
+    </main>
+
+    <%- include('partials/footer') %>
+  </body>
+</html>
+```
+
+views/error.ejs
+
+html
+
+```html
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <%- include('partials/head') %>
+
+  <body>
+    <%- include('partials/header') %>
+    <%- include('partials/nav') %>
+
+    <main>
+      <h1>Error <%= status %></h1>
+      <p><%= message %></p>
+      <% if (debug && error.stack) { %>
+        <pre><%= error.stack %></pre>
+      <% } %>
+    </main>
+
+    <%- include('partials/footer') %>
+  </body>
+</html>
+```
+
+views/profile.ejs
+
+html
+
+```html
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <%- include('partials/head') %>
+
+  <body>
+    <%- include('partials/header') %>
+    <%- include('partials/nav') %>
+
+    <main>
+      <h1><%= user.name %>'s Profile</h1>
+      <p>ID: <%= user.id %></p>
+      <h2>Hobbies</h2>
+      <ul>
+        <% user.key.forEach(function(item) { %>
+          <li><%= item %></li>
+        <% }); %>
+      </ul>
+    </main>
+
+    <%- include('partials/footer') %>
+  </body>
+</html>
+```
+
+Step 4: Verify Route Data
+
+Ensure all your routes in src/routes/index.js pass the title variable (and other necessary data) to the views:
+
+javascript
+
+```javascript
+const express = require("express");
+const router = express.Router();
+const dotenv = require("dotenv");
+dotenv.config();
+
+router.get("/", (req, res) => {
+  res.render("itoryindex", { title: "Home" });
+});
+
+router.get("/about", (req, res) => {
+  res.render("about", { title: "About" });
+});
+
+router.get("/contact", (req, res) => {
+  res.render("contact", { title: "Contact" });
+});
+
+router.get("/profile", (req, res) => {
+  const user = {
+    name: process.env.USER_NAME || "Joe Bloggs",
+    id: process.env.USER_ID || "239482",
+    key: process.env.USER_KEY
+      ? process.env.USER_KEY.split(",")
+      : ["reading", "gaming", "hiking"]
+  };
+  res.render("profile", { user: user, title: `${user.name}'s Profile` });
+});
+
+module.exports = router;
+```
+
+**Notes:**
+
+- The title for profile is set dynamically based on the user’s name.
+- There’s a typo in your original index.js (res.render("itoryindex"...) should be res.render("index", ...)), which I’ve assumed was a copy-paste error.
+
+Step 5: Test
+
+1. Restart your server: node src/bin/www.
+2. Visit each page:
+   - http://localhost:3000/
+   - http://localhost:3000/about
+   - http://localhost:3000/contact
+   - http://localhost:3000/profile
+   - http://localhost:3000/missing (to test the error page)
+3. Verify that:
+   - The <head> section is consistent across all pages.
+   - The title changes appropriately for each page.
+   - Stylesheets load correctly.
+
+Additional Considerations
+
+- **Customizing <head> Per Page**: If a specific page needs additional <head> content (e.g., a unique <script> or <meta> tag), you can pass extra variables to head.ejs or add a section after the include. For example:
+
+  html
+
+  ```html
+  <!-- views/index.ejs -->
+  <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+  <html xmlns="http://www.w3.org/1999/xhtml">
+    <%- include('partials/head') %>
+    <script src="/javascripts/custom.js"></script> <!-- Page-specific addition -->
+  
+    <body>
+      <!-- rest of the page -->
+    </body>
+  </html>
+  ```
+
+- **DOCTYPE Consistency**: You’re using XHTML 1.0 Transitional. Ensure all partials (e.g., header.ejs, nav.ejs) are compatible with this DOCTYPE if they contain markup.
+
+Your updated structure will now be:
+
+```text
+└── views
+    ├── about.ejs
+    ├── contact.ejs
+    ├── error.ejs
+    ├── index.ejs
+    ├── partials
+    │   ├── footer.ejs
+    │   ├── head.ejs  <!-- New file -->
+    │   ├── header.ejs
+    │   └── nav.ejs
+    └── profile.ejs
+```
+
+This approach centralizes your <head> management and keeps your views cleaner! Let me know if you need help with additional customizations.
