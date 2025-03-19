@@ -24,7 +24,9 @@ app.get("/profile", (req, res) => {
   const user = {
     name: process.env.USER_NAME || "Joe Bloggs", // Fallback if env var is missing
     id: process.env.USER_ID || "239482", // Keep as string or parseInt if needed
-    key: process.env.USER_KEY.split(","), // Split into array if comma-separated, else default
+    key: process.env.USER_KEY
+      ? process.env.USER_KEY.split(",")
+      : ["reading", "gaming", "hiking"], // Safe split with fallback
   };
 
   // Render the profile template with the user object
