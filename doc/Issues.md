@@ -956,3 +956,177 @@ If you still see the stack trace:
 - Add a console.log('404 handler triggered') in the 404 handler to ensure it’s being hit.
 
 Let me know if this works or if you need further adjustments!
+
+---
+
+## Issue 007 - FEATURE to add the stack tracing option 
+
+To toggle the display of the error.stack in error.ejs based on a DEBUG environment variable, we need to:
+
+1. Pass the DEBUG status from the environment to the error.ejs template via app.js.
+2. Update error.ejs to conditionally show the stack trace based on that variable.
+
+Here’s how to implement this:
+
+Step 1: Update src/app.js
+
+Modify the error handler in app.js to pass the DEBUG environment variable to the template:
+
+javascript
+
+```javascript
+const createError = require("http-errors");
+const express = require("express");
+const path = require("path");
+const dotenv = require("dotenv");
+const indexRouter = require("./routes/index");
+const usersRouter = require("./routes/users");
+
+dotenv.config();
+
+const app = express();
+
+// View engine setup
+app.set("views", path.join(__dirname, "views"));
+app.set("view engine", "ejs");
+
+// Middleware
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
+app.use(express.static(path.join(__dirname, "public")));
+
+// Routes
+app.use("/", indexRouter);
+app.use("/users", usersRouter);
+
+// Custom 404 handler
+app.use((req, res, next) => {
+  next(createError(404));
+});
+
+// Error handler
+app.use((err, req, res, next) => {
+  res.locals.message = err.message;
+  res.locals.error = req.app.get("env") === "development" ? err : {};
+
+  res.status(err.status || 500);
+  res.render("error", {
+    title: "Error",
+    status: err.status || 500,
+    message: err.message,
+    error: err, // Pass the full error object
+    debug: process.env.DEBUG === "true" // Pass DEBUG as a boolean
+  });
+});
+
+module.exports = app;
+```
+
+**Changes:**
+
+- Added debug: process.env.DEBUG === "true" to the res.render options. This converts the DEBUG env variable (a string) to a boolean (true or false).
+- Kept error: err to pass the full error object (including the stack trace) to the template.
+
+Step 2: Update src/views/error.ejs
+
+Modify error.ejs to use the debug variable to conditionally show the stack trace:
+
+html
+
+```html
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= title %> - <%= status %></title>
+    <link rel="stylesheet" href="/stylesheets/style.css" />
+  </head>
+  <body>
+    <%- include('partials/header') %>
+    <%- include('partials/nav') %>
+
+    <main>
+      <h1>Error <%= status %></h1>
+      <p><%= message %></p>
+      <% if (debug && error.stack) { %>
+        <pre><%= error.stack %></pre>
+      <% } %>
+    </main>
+
+    <%- include('partials/footer') %>
+  </body>
+</html>
+```
+
+**Changes:**
+
+- Changed the CSS link to /stylesheets/style.css to match your project structure (adjust if it’s still /styles/style.css).
+- Added a conditional <% if (debug && error.stack) %> to only show the stack trace when DEBUG=true and there’s a stack trace available.
+
+Step 3: Set Up the Environment Variable
+
+Create or update your .env file in the project root:
+
+```text
+# .env
+DEBUG=true  # Set to "true" to show stack trace, "false" or anything else to hide it
+USER_NAME=Joe Bloggs
+USER_ID=239482
+USER_KEY=reading,gaming,hiking
+PORT=3000
+```
+
+Alternatively, you can set it when running the server:
+
+bash
+
+```bash
+DEBUG=true node src/bin/www  # Show stack trace
+DEBUG=false node src/bin/www # Hide stack trace
+```
+
+How It Works
+
+- When DEBUG=true in your .env file (or environment):
+  - process.env.DEBUG === "true" evaluates to true.
+  - The debug variable in the template is true.
+  - The stack trace shows in the browser (e.g., for http://localhost:3000/missing).
+- When DEBUG=false or unset:
+  - process.env.DEBUG === "true" evaluates to false.
+  - The stack trace is hidden, and you only see "Error 404 Not Found".
+
+Testing
+
+1. **With Stack Trace**:
+
+   - Set DEBUG=true in .env or run DEBUG=true node src/bin/www.
+
+   - Visit http://localhost:3000/missing.
+
+   - You should see:
+
+     ```text
+     Error 404
+     Not Found
+     [stack trace here]
+     ```
+
+2. **Without Stack Trace**:
+
+   - Set DEBUG=false in .env or run DEBUG=false node src/bin/www.
+
+   - Visit http://localhost:3000/missing.
+
+   - You should see only:
+
+     ```text
+     Error 404
+     Not Found
+     ```
+
+Notes
+
+- **Case Sensitivity**: DEBUG must be exactly "true" (lowercase) to enable the stack trace. Any other value ("off", "false", or unset) will disable it.
+- **CSS Path**: If your CSS is still in src/public/styles/ instead of src/public/stylesheets/, update the link in error.ejs to <link rel="stylesheet" href="/styles/style.css" />.
+- **Security**: Hiding the stack trace in production is a good practice to avoid exposing internal details. You could also tie this to NODE_ENV (e.g., only show stack in development), but DEBUG gives you more explicit control.
+
+Let me know if you need further tweaks!

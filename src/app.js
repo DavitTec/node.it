@@ -31,10 +31,11 @@ app.use("/users", usersRouter);
 
 // Custom 404 handler
 app.use((req, res, next) => {
-  next(createError(404));
+  next(createError(404)); // use for error.ejs
+  //res.status(404).send("Error 404 Not Found"); // use for basic text
 });
 
-// Error handler
+// Error handler (for non-404 errors)
 app.use((err, req, res, next) => {
   // Set locals, only providing error in development
   res.locals.message = err.message;
@@ -46,6 +47,8 @@ app.use((err, req, res, next) => {
     title: "Error",
     status: err.status || 500,
     message: err.message,
+    error: err, // Pass the full error object
+    debug: process.env.DEBUG === "true", // Pass DEBUG as a boolean
   });
 });
 

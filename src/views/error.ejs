@@ -10,12 +10,14 @@
 
     <main>
       <h1>Error <%= status %></h1>
+      <!-- Modified DEBUG mode option
+          Must be set env
+  -->
       <p><%= message %></p>
-      <% if (error.stack) { %>
+      <% if (debug && error.stack) { %>
       <pre><%= error.stack %></pre>
       <% } %>
     </main>
-
     <%- include('partials/footer') %>
   </body>
 </html>
