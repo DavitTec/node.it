@@ -6,16 +6,23 @@ async function generateStaticFiles() {
   const outputDir = path.join(__dirname, "..", "dist"); // Output directory for static files
   await fs.mkdir(outputDir, { recursive: true });
 
+  const basePath = "/node.it"; // Set base path for GitHub Pages
+
   // Define pages with folder names and data
   const pages = [
-    { folder: "", file: "index.ejs", data: { title: "Home" } }, // Root index
-    { folder: "about", file: "about.ejs", data: { title: "About" } },
-    { folder: "contact", file: "contact.ejs", data: { title: "Contact" } },
+    { folder: "", file: "index.ejs", data: { title: "Home", basePath } }, // Root index
+    { folder: "about", file: "about.ejs", data: { title: "About", basePath } },
+    {
+      folder: "contact",
+      file: "contact.ejs",
+      data: { title: "Contact", basePath },
+    },
     {
       folder: "profile",
       file: "profile.ejs",
       data: {
         title: "Joe Bloggs's Profile",
+        basePath,
         user: {
           name: "Joe Bloggs",
           firstname: "Joe",
