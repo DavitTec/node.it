@@ -6,6 +6,7 @@
   "private": true,
   "scripts": {
     "test": "node ./test/index",
+    "test:all": "mocha --recursive --exit",
     "generate-static": "node scripts/generate-static.js",
     "predeploy": "pnpm generate-static",
     "deploy": "gh-pages -d dist",
@@ -42,7 +43,9 @@
     "morgan": "^1.10.0"
   },
   "devDependencies": {
+    "chai": "^5.2.0",
     "ico-endec": "^0.1.6",
+    "mocha": "^11.1.0",
     "sharp": "^0.33.5",
     "standard-version": "^9.5.0"
   },

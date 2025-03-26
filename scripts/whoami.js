@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 // index.js
 require("dotenv").config();
-const car = require("./car");
+const car = require("../components/car");
 
 process.argv.forEach((val, index) => {
   console.log(`${index}: ${val}`);
@@ -25,16 +25,15 @@ if (!!myName) {
 console.log("\nProcess started\n--------------------\n");
 
 console.log("Hello " + capitalize(myName) + ", \n");
-console.log("My car is a " + car.brand + " " + car.model + "");
-console.log("My %s has %d wheels", "car", car.wheels);
-console.log("what ID:@" + process.env.USER_ID); // "239482"
+console.log("My %s has %d wheels", "car", 4);
+console.log("User ID:@" + process.env.USER_ID); // "239482"
 
-console.log("\nProcess terminated");
+console.log("Process terminated");
 process.exit(0);
 
 //References
 //split(" ") will convert your string into an array of words (substrings resulted from the division of the string using space as divider) and then you can get the first word accessing the first array element with [0]. https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String/split
-// -----
+// ------
 // if (!!str) {
 //    // Some code here
 // } // It returns false for null, undefined, 0, 000, "", false.

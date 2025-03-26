@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+// car.js
 const car = {
   brand: "Ford",
   model: "Fiesta",
