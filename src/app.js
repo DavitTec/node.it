@@ -13,6 +13,13 @@ const app = express();
 // (and the static build's dist/public/, stage/public/ layout).
 app.use("/public", express.static(path.join(__dirname, "..", "public")));
 
+// CSS/JS sources are served directly from src/ in the live app — no build
+// step needed here. The static build (generate-static.js) copies the same
+// src/css, src/js into dist/css, dist/js instead, since there's no server
+// there to serve them from.
+app.use("/css", express.static(path.join(__dirname, "css")));
+app.use("/js", express.static(path.join(__dirname, "js")));
+
 // View engine setup
 // Set up EJS as the view engine
 console.log("Views directory:", path.join(__dirname, "views"));

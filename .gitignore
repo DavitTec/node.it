@@ -6,6 +6,7 @@ yarn-debug.log*
 yarn-error.log*
 lerna-debug.log*
 archives/
+dist/
 
 # Temps and Worksheets
 docs/TODO.md
@@ -89,6 +90,9 @@ typings/
 
 # Local-only staging build (pnpm build:staging) — never deployed, unlike dist/
 stage/
+
+# Generated favicons (pnpm makeicons) — originals live in src/assets/icons/
+public/icons/
 
 # Gatsby files
 .cache/

@@ -8,6 +8,7 @@
     "test": "node ./test/index",
     "test:all": "mocha --recursive --exit",
     "clean": "node scripts/clean.js",
+    "postclean": "pnpm makeicons",
     "generate-static": "node scripts/generate-static.js",
     "generate-static:staging": "PROJECT_STATUS=staging node scripts/generate-static.js",
     "build": "pnpm clean && pnpm generate-static",

@@ -61,6 +61,13 @@ async function generateStaticFiles() {
   const publicDir = path.join(__dirname, "..", "public");
   await copyDir(publicDir, path.join(outputDir, "public"));
 
+  // Copy src/css, src/js into the output directory — the live app serves
+  // these directly from src/, but a static build has no server to do that,
+  // so they're copied alongside the rendered pages instead.
+  const srcDir = path.join(__dirname, "..", "src");
+  await copyDir(path.join(srcDir, "css"), path.join(outputDir, "css"));
+  await copyDir(path.join(srcDir, "js"), path.join(outputDir, "js"));
+
   console.log(`Static build for mode "${config.mode}" written to ${outputDir}`);
 }
 
