@@ -2,6 +2,16 @@
 
 All notable changes to this project will be documented in this file. See [standard-version](https://github.com/conventional-changelog/standard-version) for commit guidelines.
 
+### [0.2.1](https://github.com/DavitTec/node.it/compare/v0.1.10-0...v0.2.1) (2026-09-11)
+
+
+### Bug Fixes
+
+* remove /dist ([cb2f478](https://github.com/DavitTec/node.it/commit/cb2f478849067e22539185db2c3a34c2c9cf1fb4))
+* **security:** bump direct sharp dependency range to patched 0.35.4 ([9b0d6e0](https://github.com/DavitTec/node.it/commit/9b0d6e0c06f255b05765a2c2ad790edf70935e97))
+* **security:** pin transitive serialize-javascript to patched 7.1.1 ([95e072d](https://github.com/DavitTec/node.it/commit/95e072d12a536ae8e6dce535595bb5f9c6393ef8))
+* **security:** pin vulnerable transitive dependencies ([2f078b9](https://github.com/DavitTec/node.it/commit/2f078b9355bf229e5e8aeab8c9aed9f1fc6e374b))
+
 ### [0.1.10-0](https://github.com/DavitTec/node.it/compare/v0.1.9...v0.1.10-0) (2025-03-26)
 
 ### [0.1.9](https://github.com/DavitTec/node.it/compare/v0.1.8...v0.1.9) (2025-03-20)

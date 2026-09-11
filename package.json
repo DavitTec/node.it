@@ -1,6 +1,6 @@
 {
   "name": "node_it",
-  "version": "0.1.10-0",
+  "version": "0.2.1",
   "description": "simple node.js web server",
   "type": "commonjs",
   "private": true,
@@ -16,7 +16,6 @@
     "predeploy": "pnpm build:gh-pages",
     "deploy": "gh-pages -d dist",
     "start": "node server.js",
-    "hello": "node ./helloworld/hello",
     "release": "standard-version",
     "prelease": "standard-version -p ",
     "web": "node ./src/bin/server.js",
