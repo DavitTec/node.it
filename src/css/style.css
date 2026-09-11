@@ -73,6 +73,80 @@ a {
   text-decoration: none;
 }
 
+/* Card */
+.card-grid {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2.5rem;
+  padding: 1rem 0 2rem;
+}
+
+.card {
+  position: relative;
+  width: 100%;
+  max-width: 355px;
+  border-radius: 20px;
+  padding: 2.5rem 1.5rem 1.5rem;
+  text-align: left;
+}
+
+.card--pink {
+  background: #f6d9dd;
+}
+
+.card--mint {
+  background: #dcefea;
+}
+
+.card__icon {
+  position: absolute;
+  top: -24px;
+  left: 1.5rem;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  background: #16161a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 6px 14px rgba(0, 0, 0, 0.25);
+}
+
+.card__icon svg {
+  width: 22px;
+  height: 22px;
+}
+
+.card__title {
+  font-size: 1.1rem;
+  color: #16161a;
+  margin: 0.5rem 0 0.5rem;
+}
+
+.card__description {
+  font-size: 0.85rem;
+  color: #5f6368;
+  margin-bottom: 1.25rem;
+}
+
+.card__button {
+  display: block;
+  width: 100%;
+  border: none;
+  border-radius: 8px;
+  background: #16161a;
+  color: #fff;
+  font-size: 0.8rem;
+  letter-spacing: 0.05em;
+  padding: 0.85rem 1rem;
+  cursor: pointer;
+}
+
+.card__button:hover {
+  background: #333;
+}
+
 /* Mobile (up to 767px) */
 @media (max-width: 767px) {
   nav ul {
@@ -106,5 +180,35 @@ a {
 
   main {
     padding: 2rem;
+  }
+
+  .card-grid {
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: center;
+  }
+
+  .card {
+    max-width: 420px;
+    padding: 3rem 2rem 2rem;
+  }
+
+  .card__icon {
+    top: -28px;
+    width: 64px;
+    height: 64px;
+  }
+
+  .card__icon svg {
+    width: 26px;
+    height: 26px;
+  }
+
+  .card__title {
+    font-size: 1.3rem;
+  }
+
+  .card__description {
+    font-size: 0.95rem;
   }
 }

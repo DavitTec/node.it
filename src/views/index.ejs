@@ -12,6 +12,21 @@
         <h2>Main Content</h2>
         <p>This is the main content of the page.</p>
       </section>
+
+      <section class="card-grid">
+        <%- include('partials/card', {
+          variant: 'pink',
+          title: 'Card Headline',
+          description: 'Description of the card - usually a few words about the feature, function or actions this UI element affords',
+          buttonText: 'BUTTON'
+        }) %>
+        <%- include('partials/card', {
+          variant: 'mint',
+          title: 'Card Headline',
+          description: 'Description of the card - usually a few words about the feature, function or actions this UI element affords',
+          buttonText: 'BUTTON'
+        }) %>
+      </section>
     </main>
 
     <%- include('partials/footer') %>
