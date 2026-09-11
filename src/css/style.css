@@ -12,19 +12,22 @@ body {
   min-height: 100vh;
   display: flex;
   flex-direction: column;
+  background: #ffffff;
+  color: #5a0223;
 }
 
 /* Header */
 header {
-  background: #333;
-  color: #fff;
+  background: #5a0223;
+  color: #ffffff;
   text-align: center;
   padding: 1rem;
 }
 
 /* Navigation */
 nav {
-  background: #f4f4f4;
+  background: #a91f4d;
+  color: #ffffff;
   padding: 1rem;
   position: sticky;
   top: 0;
@@ -39,7 +42,7 @@ nav ul {
 }
 
 nav a {
-  color: #333;
+  color: #ffffff;
   text-decoration: none;
 }
 
