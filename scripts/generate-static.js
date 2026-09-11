@@ -1,37 +1,43 @@
 const ejs = require("ejs");
 const fs = require("fs").promises;
 const path = require("path");
+const config = require("../src/config");
+const { getDisplayUser } = require("../src/lib/user");
 
 async function generateStaticFiles() {
-  const outputDir = path.join(__dirname, "..", "dist"); // Output directory for static files
+  if (!config.staticDir) {
+    throw new Error(
+      `generate-static has nothing to build in mode "${config.mode}" — ` +
+        `production renders live and has no static output directory.`
+    );
+  }
+
+  const outputDir = config.staticDir; // ./dist (development) or ./stage (staging)
   await fs.mkdir(outputDir, { recursive: true });
 
-  const basePath = "/node.it"; // Set base path for GitHub Pages
+  // config.site.basePath ("/node.it") is the GitHub Pages project-site
+  // prefix — only correct when the build is actually published there.
+  // Local dev/staging previews are served from their own root, so they
+  // need an empty basePath instead.
+  const basePath = process.env.GH_PAGES ? config.site.basePath : "";
 
-  // Define pages with folder names and data
-  const pages = [
-    { folder: "", file: "index.ejs", data: { title: "Home", basePath } }, // Root index
-    { folder: "about", file: "about.ejs", data: { title: "About", basePath } },
-    {
-      folder: "contact",
-      file: "contact.ejs",
-      data: { title: "Contact", basePath },
+  // Pages sourced from data/config.json, plus the computed profile page
+  const pages = config.pages.map(({ route, file, title }) => ({
+    folder: route,
+    file,
+    data: { title, basePath },
+  }));
+
+  const user = getDisplayUser(config);
+  pages.push({
+    folder: "profile",
+    file: "profile.ejs",
+    data: {
+      title: `${user.name}'s Profile`,
+      basePath,
+      user,
     },
-    {
-      folder: "profile",
-      file: "profile.ejs",
-      data: {
-        title: "Joe Bloggs's Profile",
-        basePath,
-        user: {
-          name: "Joe Bloggs",
-          firstname: "Joe",
-          id: "239482",
-          key: ["reading", "gaming", "hiking"],
-        },
-      },
-    },
-  ];
+  });
 
   for (const page of pages) {
     const templatePath = path.join(__dirname, "..", "src", "views", page.file);
@@ -51,9 +57,11 @@ async function generateStaticFiles() {
     console.log(`Generated ${page.folder || "root"}/index.html`);
   }
 
-  // Copy root public/ to dist/public/
+  // Copy root public/ into the output directory's public/
   const publicDir = path.join(__dirname, "..", "public");
   await copyDir(publicDir, path.join(outputDir, "public"));
+
+  console.log(`Static build for mode "${config.mode}" written to ${outputDir}`);
 }
 
 async function copyDir(src, dest) {
@@ -70,4 +78,7 @@ async function copyDir(src, dest) {
   }
 }
 
-generateStaticFiles().catch((err) => console.error("Error:", err));
+generateStaticFiles().catch((err) => {
+  console.error("Error:", err.message);
+  process.exit(1);
+});

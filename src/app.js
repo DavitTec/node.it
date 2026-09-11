@@ -1,24 +1,17 @@
 var createError = require("http-errors");
 const express = require("express");
 const path = require("path");
-const dotenv = require("dotenv");
+const config = require("./config");
 const indexRouter = require("./routes/index");
 const usersRouter = require("./routes/users"); // test but not active
 const cookieParser = require("cookie-parser");
 const logger = require("morgan");
 
-// setting congiurations
-dotenv.config();
-
 const app = express();
 
-// Serve static files from root public/
-app.use(express.static(path.join(__dirname, "..", "public")));
-
-// Fallback for SPA-like behavior (optional)
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "..", "dist", "index.html"));
-});
+// Serve root public/ under /public, matching the views' asset paths
+// (and the static build's dist/public/, stage/public/ layout).
+app.use("/public", express.static(path.join(__dirname, "..", "public")));
 
 // View engine setup
 // Set up EJS as the view engine
@@ -29,7 +22,6 @@ app.set("view engine", "ejs");
 // Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(express.static(path.join(__dirname, "public")));
 app.use(cookieParser());
 app.use(logger("dev"));
 
@@ -47,7 +39,7 @@ app.use((req, res, next) => {
 app.use((err, req, res, next) => {
   // Set locals, only providing error in development
   res.locals.message = err.message;
-  res.locals.error = req.app.get("env") === "development" ? err : {};
+  res.locals.error = config.mode !== "production" ? err : {};
 
   // Render the error page
   res.status(err.status || 500);
@@ -56,7 +48,7 @@ app.use((err, req, res, next) => {
     status: err.status || 500,
     message: err.message,
     error: err, // Pass the full error object
-    debug: process.env.DEBUG === "true", // Pass DEBUG as a boolean
+    debug: config.server.debug, // Pass DEBUG as a boolean
   });
 });
 

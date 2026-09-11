@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // index.js
-require("dotenv").config();
+const config = require("../src/config");
 const car = require("../components/car");
 
 process.argv.forEach((val, index) => {
@@ -19,14 +19,14 @@ var myName = args[0];
 if (!!myName) {
   myName;
 } else {
-  myName = process.env.USER_NAME.split(" ")[0];
+  myName = config.user.name.split(" ")[0];
 }
 
 console.log("\nProcess started\n--------------------\n");
 
 console.log("Hello " + capitalize(myName) + ", \n");
 console.log("My %s has %d wheels", "car", 4);
-console.log("User ID:@" + process.env.USER_ID); // "239482"
+console.log("User ID:@" + config.user.id); // "239482"
 
 console.log("Process terminated");
 process.exit(0);

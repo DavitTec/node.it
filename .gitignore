@@ -82,6 +82,9 @@ typings/
 .nuxt
 #dist
 
+# Local-only staging build (pnpm build:staging) — never deployed, unlike dist/
+stage/
+
 # Gatsby files
 .cache/
 # Comment in the public line in if your project uses Gatsby and *not* Next.js

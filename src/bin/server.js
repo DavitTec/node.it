@@ -4,18 +4,45 @@
  * Module dependencies.
  */
 
-const app = require("../app.js");
+const config = require("../config");
 const debug = require("debug")("src:server");
 const http = require("http");
+const fs = require("fs");
+const express = require("express");
 
 /**
- * Get port from environment and store in Express.
+ * Build the app for the current mode: production renders live via the
+ * dynamic Express app; development/staging serve a pre-built static export.
  */
 
-const hostname = process.env.NODE_HOSTNAME || "localhost";
+function buildApp() {
+  if (config.mode === "production") {
+    return require("../app.js");
+  }
+
+  if (!fs.existsSync(config.staticDir)) {
+    console.error(
+      `No static build found at ${config.staticDir} for mode "${config.mode}".\n` +
+        `Run 'pnpm build' first.`
+    );
+    process.exit(1);
+  }
+
+  const staticApp = express();
+  staticApp.use(express.static(config.staticDir));
+  return staticApp;
+}
+
+const app = buildApp();
+
+/**
+ * Get hostname/port from app config and store in Express.
+ */
+
+const hostname = config.server.hostname;
 app.set("hostname", hostname);
 
-const port = normalizePort(process.env.PORT || "3000");
+const port = normalizePort(config.server.port);
 app.set("port", port);
 
 /**
@@ -30,7 +57,7 @@ const server = http.createServer(app);
 
 server.listen(port);
 
-console.log(`Express server on http://${hostname}:${port}/;
+console.log(`Express server (${config.mode}) on http://${hostname}:${port}/;
   to Close crtl C or close terminal\n-----------------------------`);
 server.on("error", onError);
 server.on("listening", onListening);

@@ -1,0 +1,20 @@
+{
+  "server": {
+    "hostname": "localhost",
+    "port": 3000,
+    "debug": false
+  },
+  "site": {
+    "basePath": "/node.it"
+  },
+  "user": {
+    "name": "Joe Bloggs",
+    "id": "239482",
+    "interests": ["reading", "gaming", "hiking"]
+  },
+  "pages": [
+    { "route": "", "file": "index.ejs", "title": "Home" },
+    { "route": "about", "file": "about.ejs", "title": "About" },
+    { "route": "contact", "file": "contact.ejs", "title": "Contact" }
+  ]
+}

@@ -49,7 +49,7 @@ git clone https://github.com/DavitTec/node.it.git  && cd node.it
 Testing it!
 
 ``` 
-npm install  
+pnpm install  
 ```
 Now run a simple Hello World http server
 ``` 
@@ -75,6 +75,28 @@ This will present information to Console only
 pnpm web
 ```
 
-This will run **'node ./src/bin/www'** and the Express server
+This will run **'node ./src/bin/server.js'** and the Express server
 
 <img src="./public/images/homepage1.png" alt="Homepage" style="zoom:40%;" /><img src="./public/images/mobile1.png" alt="Homepage" style="zoom:30%;" />
+
+## Troubleshooting: finding and killing a running server/port
+
+If a server is still running and Ctrl+C doesn't stop it — for example it was
+started detached, in another terminal, or by a tool that isn't your current
+shell's child process — find and stop it directly instead:
+
+Find it:
+```bash
+ss -tlnp | grep :3000        # by port — shows the PID directly
+pgrep -fa server.js          # by process name/command line
+```
+
+Stop it:
+```bash
+kill <PID>          # polite (SIGTERM) — gives it a chance to shut down cleanly
+kill -9 <PID>        # forceful (SIGKILL) — use if the plain kill doesn't work after a few seconds
+```
+
+Swap `:3000` for whatever port you're running on (e.g. `8080`, or the `PORT`
+set in `.env` for staging/production — see
+[doc/Local_Network_Testing.md](doc/Local_Network_Testing.md)).
